@@ -1,15 +1,17 @@
 import time
+import random
 import numpy as np
 from threading import Thread, Event
 from pythonosc import udp_client
-from dizionari import scale_per_accordo,chords_midi_dict,basic_grammar
+from dizionari import scale_per_accordo,chords_midi_dict,basic_grammar,scale_midi_per_accordo
 import argparse
 from pythonosc import udp_client
+from tempo import default_word_dur
 
 ID_START =0
+scala_corrente = []
 
 class Nota:
-
     def __init__(self,id =0,tipologia= "",midinote=0,dur =0,amp =0,BPM=80):
          self.id = ID_START
          self.tipologia = tipologia
@@ -21,8 +23,8 @@ class Nota:
         return "\n\t".join([ 
                                 "midinote: %d"%self.midinote, 
                                 "duration: %s beats"%str(self.dur),
-                                "amplitude: %.1f"%self.amp,
-                                "BPM: %d"%self.BPM])
+                                "amplitude: %.1f"%self.amp])
+                                #"BPM: %d"%self.BPM
     
     def note_sleep(BPM, beats):
         time.sleep(beats*60./BPM)
@@ -46,20 +48,29 @@ class Accordo:
 
      def set_sigla(self,sigla):
         self.sigla = sigla
-          
+     
+     def set_durata(self,durata):
+         self.durata=durata
 
-"""
-class Composizione(Nota):
-     def __init__(self, BPM=120):
-        Composizione.__init__(self,BPM=BPM)
+class Composizione(Nota, Accordo):
     
-     def net(self):
-          if self.tipologia == "consonanza":
+     def genera_melodia_per_battuta(self,Accordo,numeroNote):
+          if Accordo.tipologia == "consonanza":
             # regole per successione consonante
+            scala_corrente = scale_midi_per_accordo[Accordo.sigla]
+
+            # Genera una lista dei primi n numero della scala dell'accordo
+            note_generate = scala_corrente[:numeroNote]
+
         
-          if self.tipologia == "dissonanza":
+          if Accordo.tipologia == "dissonanza":
             # regole per successione dissonanza
-"""            
+            scala_corrente = scale_midi_per_accordo[Accordo.sigla]
+
+            # Genera una lista dei primi n numero della scala dell'accordo
+            note_generate = scala_corrente[:numeroNote]
+
+          return tuple(note_generate)
 
 class OscManager:
 
@@ -93,34 +104,5 @@ class OscManager:
         client = udp_client.SimpleUDPClient(args.ip, args.port)
 
         return client
+
     
- 
-"""   
-    def __init__(self, accordi_port=57121, melodia_port=57120):
-        self.accordi_client = self._start_osc_communication(accordi_port)
-        self.melodia_client = self._start_osc_communication(melodia_port)
-
-    def _start_osc_communication(self, port):
-        parser = argparse.ArgumentParser()
-        parser.add_argument("--ip", default='127.0.0.1', help="The ip of the OSC server")
-        parser.add_argument("--port", type=int, default=port, help="The port the OSC server is listening on")
-        
-        args = parser.parse_args()
-
-        client = udp_client.SimpleUDPClient(args.ip, args.port)
-
-        return client
-
-    def send_accordo_message(self, message):
-        self.accordi_client.send_message("/accordi", message)
-
-    def send_melodia_message(self, message):
-        self.melodia_client.send_message("/melodia", message)
-
-"""
-
-
-
-
-
-
