@@ -13,12 +13,12 @@ sigla_accordo = ""
 risposta = ""
 choosen_chord_sequence = []
 compositore = Composizione()
-
+numero_figure_metriche = []
 grammar = Grammar_Sequence(basic_grammar)
 lunghezza_composizione = 0
 sequenza_ritmica_melodia = []
 sequenza_ritmica_melodia_divisa = []
-
+pos = 0
 # create list to store future chords
 chords = []
 #variabile temporanea per note di quell'accordo
@@ -175,11 +175,16 @@ for element in sequenza_ritmica_melodia_divisa:
      #numero note per battuta
      contatore_note = 0
      contatore_note += len(element)
-     #print(contatore_note)
+     print(contatore_note)
+     numero_figure_metriche.append(contatore_note)
+
 
 for element in sequenza_accordi_per_scale:
-     note_battuta = compositore.genera_melodia_per_battuta(element,3)
+     note_battuta = compositore.genera_melodia_per_battuta(element, numero_figure_metriche[pos])
      print(note_battuta)
+     pos += 1
+
+#print(numero_figure_metriche)     
 
 # STAMPE DI CONTROLLO 
 #print("lunghezza composizione : "+ str(lunghezza_composizione))
@@ -203,13 +208,19 @@ for element in sequenza_accordi_per_scale:
 """
 # SEND MELODIA
 for element in melodia_totale:
-            mando_nota.send_message("/synth_control_melodia",[element.midinote,element.amp,element.dur])
+            #mando_nota.send_message("/synth_control_melodia",[element.midinote,element.amp,element.dur])
             time.sleep(1)
+"""
 
-# SEND ACCORDI
+# SEND ACCORDI E MELODIA
 for c in sequenza_accordi_per_scale:
         print("nota 1: " + str(c.nota1) + " nota 2: " + str(c.nota2) +" nota 3: " +str(c.nota3) )
         #osc_manager.send_accordo_message(['chord3',chords_midi_dict[c][0],chords_midi_dict[c][1],chords_midi_dict[c][2]])
         mando_accordo.send_message("/synth_control_accordi",['chord3',c.nota1,c.nota2,c.nota3])
-        time.sleep(1)
-"""
+        posizione = 0
+        for nota in scale_midi_per_accordo[c.sigla]:
+            #print(scale_midi_per_accordo[c.sigla][posizione])
+            mando_nota.send_message("/synth_control_melodia",[scale_midi_per_accordo[c.sigla][posizione]])
+            posizione +=1
+            time.sleep(1)
+

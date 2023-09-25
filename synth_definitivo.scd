@@ -57,9 +57,9 @@ OSCdef('OSCreceiver',
 
 		msg.postln;
 		note=msg[1];
-		amp=msg[2];
-		dur =msg[3];
-		~instr.set(\midinote,note, \amp,amp, \dur,dur);
+		//amp=msg[2];
+		//dur =msg[3];
+		~instr.set(\midinote,note, \amp,1, \dur,0.25);
 
 	},
 	'/synth_control_melodia',);
@@ -98,7 +98,7 @@ x = OSCFunc( { | msg, time, addr, port |
 			p=Pbind(
 				\instrument, \harpsi,
 				\note, Pseq([chord],1),
-				\dur, 1,
+				\dur, inf,
 				\legato, 0.4,
 				\amp, 1.5,
 				//\strum, 0.1 // try 0, 0.1, 0.2, etc
