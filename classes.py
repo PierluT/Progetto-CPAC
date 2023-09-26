@@ -10,6 +10,12 @@ from tempo import default_word_dur
 
 ID_START =0
 scala_corrente = []
+num_note_generate = 0
+nota1 = 0
+nota2 = 0
+nota3 = 0
+nota4 = 0
+note_generate =[]
 
 class Nota:
     def __init__(self,id =0,tipologia= "",midinote=0,dur =0,amp =0,BPM=80):
@@ -33,11 +39,11 @@ class Nota:
         return beats*60./BPM
     
 class Accordo:
-     
-     def __init__(self,durata = 1,amp = 1,BPM= 80):
-          self.durata = durata
-          self.amp = amp 
 
+     def __init__(self,amp = 1,BPM= 80,nota1 = 0,nota2 = 0,nota3 = 0,sigla = "",durata = 0):
+          self.durata = durata
+          self.amp = amp
+          
      def set_tipologia(self,tipologia):
          self.tipologia = tipologia
 
@@ -48,27 +54,87 @@ class Accordo:
 
      def set_sigla(self,sigla):
         self.sigla = sigla
+    
+     def get_sigla(self):
+         return self.sigla
      
      def set_durata(self,durata):
          self.durata=durata
 
-class Composizione(Nota, Accordo):
+class Battuta:
+    def __init__(self):
+        self.accordo = Accordo()
+        self.note = []
+        
+    def set_accordo(self,accordo):
+        self.accordo = accordo
     
+    def set_note(self,nota):
+        if isinstance(nota,Nota):
+            self.note.append(nota)
+        else:
+            print("Tentativo di aggiungere un oggetto non valido alla lista delle note.")
+
+class Composizione(Nota, Accordo):
+        
      def genera_melodia_per_battuta(self,Accordo,numeroNote):
+          
           if Accordo.tipologia == "consonanza":
             # regole per successione consonante
             scala_corrente = scale_midi_per_accordo[Accordo.sigla]
+            #salto intervallo
+            salto_intervallo = 2
+            #per la consonanza si può partire dalla prima,dalla quarta nota
+            posizione_iniziale = random.choice([0,3])
+            nota_iniziale = scala_corrente[posizione_iniziale]
+            
+            if(numeroNote == 2):
+                nota1 = nota_iniziale
+                nota2 = scala_corrente[posizione_iniziale + salto_intervallo]
+                note_generate = [nota1,nota2]
 
-            # Genera una lista dei primi n numero della scala dell'accordo
-            note_generate = scala_corrente[:numeroNote]
+            if(numeroNote == 3):
+                nota1 = nota_iniziale
+                nota2 = scala_corrente[posizione_iniziale + salto_intervallo]
+                nota3 = scala_corrente[posizione_iniziale + salto_intervallo + 1]
+                note_generate =[ nota1,nota2,nota3]
 
-        
+            if(numeroNote == 4):   
+                nota1 = nota_iniziale
+                nota2 = scala_corrente[posizione_iniziale + salto_intervallo]
+                nota3 = scala_corrente[posizione_iniziale + salto_intervallo + 1]
+                nota4 = scala_corrente[posizione_iniziale + salto_intervallo + 2]
+                note_generate=[nota1,nota2,nota3,nota4]
+
+            return note_generate
           if Accordo.tipologia == "dissonanza":
             # regole per successione dissonanza
             scala_corrente = scale_midi_per_accordo[Accordo.sigla]
+            
+            #per la dissonanza si può partire dalla seconda,dalla sesta o dalla settima nota
+            posizione_iniziale = random.choice([0,3,4])
+            nota_iniziale = scala_corrente[posizione_iniziale]
+
+            if(numeroNote == 2):
+                nota1 = nota_iniziale
+                nota2 = scala_corrente[posizione_iniziale + random.choice([2,3])]
+                note_generate = [nota1,nota2]
+            if(numeroNote == 3):
+                nota1 = nota_iniziale
+                nota2 = scala_corrente[posizione_iniziale + random.choice([2,3])]
+                nota3 = scala_corrente[posizione_iniziale + random.choice([1,3])]
+                note_generate =[ nota1,nota2,nota3]
+            if(numeroNote == 4): 
+                nota1 = nota_iniziale
+                nota2 = scala_corrente[posizione_iniziale + random.choice([1,3])]
+                nota3 = scala_corrente[posizione_iniziale + random.choice([1,3])]
+                nota4 = scala_corrente[posizione_iniziale + random.choice([1,3])]
+                note_generate =[ nota1,nota2,nota3,nota4]
+            
+            return note_generate
 
             # Genera una lista dei primi n numero della scala dell'accordo
-            note_generate = scala_corrente[:numeroNote]
+            #note_generate = scala_corrente[:numeroNote]
 
           return tuple(note_generate)
 
