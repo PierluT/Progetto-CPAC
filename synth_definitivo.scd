@@ -57,9 +57,8 @@ OSCdef('OSCreceiver',
 
 		msg.postln;
 		note=msg[1];
-		//amp=msg[2];
-		//dur =msg[3];
-		~instr.set(\midinote,note, \amp,1, \dur,0.25);
+		dur =msg[2];
+		~instr.set(\midinote,note, \dur,dur, \amp,1);
 
 	},
 	'/synth_control_melodia',);
@@ -68,7 +67,7 @@ OSCdef('OSCreceiver',
 //parte accordi
 (
 x = OSCFunc( { | msg, time, addr, port |
-    var chord,note1,note2,note3,note4,pyFreq,pyAmp,pyDetune,pyLfo;
+    var chord,note1,note2,note3,note4,dur,pyFreq,pyAmp,pyDetune,pyLfo;
 
 	// Handle end of sound
 	if (msg[1] =='stop'){
@@ -81,6 +80,7 @@ x = OSCFunc( { | msg, time, addr, port |
 			note1 = msg[2].asFloat;
 			note2  = msg[3].asFloat;
 			note3  = msg[4].asFloat;
+			dur = msg[5].asFloat;
 			chord=[note1,note2, note3];
 			chord.postln();
 		};
@@ -100,7 +100,7 @@ x = OSCFunc( { | msg, time, addr, port |
 				\note, Pseq([chord],1),
 				\dur, inf,
 				\legato, 0.4,
-				\amp, 1.5,
+				\amp, 1,
 				//\strum, 0.1 // try 0, 0.1, 0.2, etc
 			).play;
 		)

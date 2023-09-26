@@ -29,6 +29,7 @@ sequenza_accordi_per_scale = []
 scale_da_usare = []
 #array delle note totali per la melodia
 melodia_totale = []
+melodia_definitiva_con_ritmo = []
 
 # INIZIALIZZAZIONE VARIABILI OSC
 client_melodia = OscManager()
@@ -102,13 +103,6 @@ while True:
         if valore_provvisorio_scelta_accordo == 0 :
             choosen_chord_sequence = consonant_bigrams
             print("consonanza")
-            """
-            sigla_accordo = predict_next_state('C',choosen_chord_sequence)
-            # GENERATE THE SEQUENCE
-            print("questo è l'accordo predetto: "+ sigla_accordo)
-            chords = generate_sequence(sigla_accordo)
-            print(chords)
-            """
             # PROBLEMA 'C'
             sigla_accordo = predict_next_state('C',choosen_chord_sequence)
             print("questo è l'accordo predetto: "+ sigla_accordo)
@@ -118,29 +112,15 @@ while True:
             accordo.set_note(chords_midi_dict[sigla_accordo][0],chords_midi_dict[sigla_accordo][1],chords_midi_dict[sigla_accordo][2])
             #accordo.set_durata()
             sequenza_accordi_per_scale.append(accordo)
-            accordo_iniziale = sigla_accordo
+            #accordo_iniziale = sigla_accordo
             scala_da_usare = scale_midi_per_accordo[sigla_accordo]
             #sequenza_accordi_per_scale.append(sigla_accordo)
             scale_da_usare.append(scala_da_usare)
-            for b in scala_da_usare:
-                    note = Nota()
-                    note.tiplogia = "consonanza"
-                    note.midinote = b
-                    note.amp = 0.2
-                    note.dur = 0.5
-                    melodia_totale.append(note)
-            
         else :
             choosen_chord_sequence = dissonant_bigrams
             print("dissonanza")
              # PROBLEMA 'C'
             sigla_accordo = predict_next_state('C',choosen_chord_sequence)
-            """
-            # GENERATE THE SEQUENCE
-            print("questo è l'accordo predetto: "+ sigla_accordo)
-            chords = generate_sequence(sigla_accordo)
-            print(chords)
-            """
             print("questo è l'accordo predetto: "+ sigla_accordo)
             accordo = Accordo()
             accordo.set_tipologia("consonanza")
@@ -151,14 +131,6 @@ while True:
             scala_da_usare = scale_midi_per_accordo[sigla_accordo]
             scale_da_usare.append(scala_da_usare)
             #print(scala_da_usare)
-            for b in scala_da_usare:
-                    note = Nota()
-                    note.id = "dissonanza"
-                    note.midinote = b
-                    note.amp = 0.2
-                    note.dur = 0.5   
-                    melodia_totale.append(note)
-            
     else : break 
 
 # INIZIO COMPOSIZIONE 
@@ -181,17 +153,32 @@ for element in sequenza_ritmica_melodia_divisa:
 
 for element in sequenza_accordi_per_scale:
      note_battuta = compositore.genera_melodia_per_battuta(element, numero_figure_metriche[pos])
-     print(note_battuta)
+     #print(note_battuta)
+     melodia_totale.append(note_battuta)
      pos += 1
+print(melodia_totale)
 
-#print(numero_figure_metriche)     
+# ASSEGNO LA DURATA ALLE NOte GENERATE 
+for numeri_note,lettere_note in zip(melodia_totale,sequenza_ritmica_melodia_divisa):
+    for numero,lettera in zip(numeri_note,lettere_note):
+            durata = default_word_dur.get(lettera, 0)
+            nota = Nota()
+            nota.midinote = numero
+            nota.dur = durata
+            melodia_definitiva_con_ritmo.append(nota)
 
 # STAMPE DI CONTROLLO 
+"""
+for element in melodia_definitiva_con_ritmo:
+     print("nota midi: "+ str(element.midinote))
+     print("durata nota : "+ str(element.dur))
+
 #print("lunghezza composizione : "+ str(lunghezza_composizione))
 #print(grammar.sequenza_ritmica_accordi(START_SEQUENCE))
 #print(len(sequenza_accordi_per_scale))
-
 """
+
+
 #  ASSEGNO AD OGNI ACCORDO LA DURATA IN BASE ALLA GRAMMAR BASE
 for element in sequenza_accordi_per_scale:
     pos_metrica_accordi= 0
@@ -201,26 +188,30 @@ for element in sequenza_accordi_per_scale:
 
 for element in sequenza_accordi_per_scale:
      print("la durata di questo accordo è: "+ str(element.durata))
-"""
 
-#print('Play the sequence with supercollider:')
 
-"""
-# SEND MELODIA
-for element in melodia_totale:
-            #mando_nota.send_message("/synth_control_melodia",[element.midinote,element.amp,element.dur])
-            time.sleep(1)
-"""
+print('Play the sequence with supercollider:')
+
 
 # SEND ACCORDI E MELODIA
 for c in sequenza_accordi_per_scale:
         print("nota 1: " + str(c.nota1) + " nota 2: " + str(c.nota2) +" nota 3: " +str(c.nota3) )
         #osc_manager.send_accordo_message(['chord3',chords_midi_dict[c][0],chords_midi_dict[c][1],chords_midi_dict[c][2]])
-        mando_accordo.send_message("/synth_control_accordi",['chord3',c.nota1,c.nota2,c.nota3])
+        mando_accordo.send_message("/synth_control_accordi",['chord3',c.nota1,c.nota2,c.nota3,c.durata])
         posizione = 0
-        for nota in scale_midi_per_accordo[c.sigla]:
-            #print(scale_midi_per_accordo[c.sigla][posizione])
-            mando_nota.send_message("/synth_control_melodia",[scale_midi_per_accordo[c.sigla][posizione]])
-            posizione +=1
+        time.sleep(1)
+        for nota in melodia_definitiva_con_ritmo:
+                #print(scale_midi_per_accordo[c.sigla][posizione])
+            mando_nota.send_message("/synth_control_melodia",[nota.midinote,nota.dur])
+            #print(nota.midinote,nota.dur)
+                #posizione +=1
             time.sleep(1)
 
+#QUA MANDAVO IL VALORE MIDI PRESO DAL DIZIONARIO PER FARE DELLE PROVE
+"""
+for nota in scale_midi_per_accordo[c.sigla]:
+            print(scale_midi_per_accordo[c.sigla][posizione])
+            mando_nota.send_message("/synth_control_melodia",[scale_midi_per_accordo[c.sigla][posizione],])
+            posizione +=1
+            time.sleep(1)
+"""
