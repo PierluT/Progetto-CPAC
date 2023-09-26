@@ -55,10 +55,17 @@ OSCdef('OSCreceiver',
 		arg msg;
 		var note,amp,dur;
 
+		if (msg[1] =='nota'){
 		msg.postln;
-		note=msg[1];
-		dur =msg[2];
+		note=msg[2];
+		dur =msg[3];
 		~instr.set(\midinote,note, \dur,dur, \amp,1);
+		};
+		if (msg[1] == 'quit'){
+			msg.postln;
+		   ~instr.set(\amp, 0);
+		};
+
 
 	},
 	'/synth_control_melodia',);
