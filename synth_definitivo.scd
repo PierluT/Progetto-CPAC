@@ -3,22 +3,19 @@ s.meter;
 NetAddr("127.0.0.1", 57120);
 // Configura il server OSC per accordi e melodia sulla stessa porta (57120)
 (
-SynthDef("moog", {
-	arg vibr=0, cutoff=0.5, midinote=60, amp=0;
-	var osc1, osc2, osc3, f0, vib_int, cutoff_freq, fil_osc, freq;
+SynthDef(\ring, {
+	arg midinote = 62, amp = 1.5, dur = 3;
+	var env, snd;
+	snd = EnvGen.kr(Env.new([0,1,0],[0.01,dur,0.01]), doneAction: 2) * SinOsc.ar(midicps(midinote), 0, 0.2) ;
+	// Aggiungi un filtro risonante
+	snd = Resonz.ar(snd, midicps(midinote), 0.1);
 
-	freq=midicps(midinote);
-	f0=exp(vibr*0.035)*freq;
-
-	osc1=Saw.ar(f0*1.0013);
-	osc2=Saw.ar(f0*0.998);
-	osc3=Saw.ar(f0*0.5);
-
-	cutoff_freq=((cutoff+0.5)*6)*freq;
-
-	fil_osc=BLowPass.ar(in:osc1+osc2+osc3, freq:cutoff_freq.min(20000));
-	Out.ar([0,1], amp*fil_osc);}).add;
+	// Modula il volume
+	snd = snd * amp;
+	Out.ar([0, 1], snd);
+ }).add;
 )
+
 
 // Synth for chords
 (
@@ -32,23 +29,13 @@ SynthDef(\harpsi, { |outbus = 0, freq = 440, amp = 0.1, gate = 1|
 
 //Parte melodia
 // SETTING the instrument as a global variable
-(
-~instr=Synth(\moog);
-)
-
-// setting the note
-(
-~instr.set(\midinote, 62, \amp, 1);
-)
-
-//setting the cutoff
-(
-~instr.set(\cutoff, 9);
-)
 
 (
-~instr.set(\amp, 0);
+~instr1=Synth(\ring);
 )
+
+
+
 ( // RECEIVER 1: PYTHON ONLY
 OSCdef('OSCreceiver',
 	{
@@ -59,7 +46,9 @@ OSCdef('OSCreceiver',
 		msg.postln;
 		note=msg[2];
 		dur =msg[3];
-		~instr.set(\midinote,note, \dur,dur, \amp,1);
+
+			a = Synth(\ring,[\midinote, note, \dur, dur]);
+
 		};
 		if (msg[1] == 'quit'){
 			msg.postln;
@@ -74,11 +63,11 @@ OSCdef('OSCreceiver',
 //parte accordi
 (
 x = OSCFunc( { | msg, time, addr, port |
-    var chord,note1,note2,note3,note4,dur,pyFreq,pyAmp,pyDetune,pyLfo;
+    var chord,note1,note2,note3,note4,pyFreq,pyAmp,pyDetune,pyLfo;
 
 	// Handle end of sound
 	if (msg[1] =='stop'){
-		h.free
+		h.free;
 	}
 	{
 	// handle class A message (freq and amplitude)
@@ -106,7 +95,7 @@ x = OSCFunc( { | msg, time, addr, port |
 				\note, Pseq([chord],1),
 				\dur, 1,
 				\legato, 0.4,
-				\amp, 1,
+				\amp, 0.2,
 				//\strum, 0.1 // try 0, 0.1, 0.2, etc
 			).play;
 		)
