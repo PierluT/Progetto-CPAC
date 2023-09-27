@@ -3,7 +3,7 @@ import random
 import numpy as np
 from threading import Thread, Event
 from pythonosc import udp_client
-from dizionari import scale_per_accordo,chords_midi_dict,basic_grammar,scale_midi_per_accordo
+from dizionari import chords_midi_dict,basic_grammar,scale_midi_per_accordo
 import argparse
 from pythonosc import udp_client
 from tempo import default_word_dur
@@ -31,12 +31,7 @@ class Nota:
                                 "duration: %s beats"%str(self.dur),
                                 "amplitude: %.1f"%self.amp])
                                 #"BPM: %d"%self.BPM
-    
-    def note_sleep(BPM, beats):
-        time.sleep(beats*60./BPM)
 
-    def beats_to_seconds(BPM, beats):
-        return beats*60./BPM
     
 class Accordo:
 
@@ -62,6 +57,7 @@ class Accordo:
          self.durata=durata
 
 class Battuta:
+
     def __init__(self):
         self.accordo = Accordo()
         self.note = []
@@ -133,29 +129,11 @@ class Composizione(Nota, Accordo):
             
             return note_generate
 
-            # Genera una lista dei primi n numero della scala dell'accordo
-            #note_generate = scala_corrente[:numeroNote]
-
           return tuple(note_generate)
 
 class OscManager:
 
-    def start_osc_communication_melodia(self):
-            # argparse helps writing user-friendly commandline interfaces
-            parser = argparse.ArgumentParser()
-            parser.add_argument("--ip", default='127.0.0.1', help="The ip of the OSC server")
-            # OSC server port (check on SuperCollider)
-            parser.add_argument("--port", type=int, default=57120, help="The port the OSC server is listening on")
-            
-            # Parse the arguments
-            args = parser.parse_args()
-
-            # Start the UDP Client
-            client = udp_client.SimpleUDPClient(args.ip, args.port)
-
-            return client
-        
-    def start_osc_communication_accordi(self):
+    def start_osc_communication(self):
         # argparse helps writing user-friendly commandline interfaces
         parser = argparse.ArgumentParser()
         # OSC server ip
@@ -170,5 +148,4 @@ class OscManager:
         client = udp_client.SimpleUDPClient(args.ip, args.port)
 
         return client
-
     
