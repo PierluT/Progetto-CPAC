@@ -1,6 +1,12 @@
+import gifAnimation.*;
+
 ArrayList<Boid> boids;
 ArrayList<Avoid> avoids;
-PImage img;
+PImage background1;
+PImage background2;
+PImage currentbackground;
+Gif gif1;
+float backgroundX=0;
 
 float globalScale = .91;
 float eraseRadius = 20;
@@ -16,7 +22,7 @@ float coheseRadius;
 boolean option_friend = true;
 boolean option_crowd = true;
 boolean option_avoid = true;
-boolean option_noise = true;
+boolean option_noise = false; // false = still brushes at the beginning
 boolean option_cohese = true;
 boolean option_changeColor = false;
 
@@ -27,7 +33,11 @@ String messageText = "";
 void setup () {
   size(1024, 576);
   textSize(16);
-  img = loadImage("brush3.png");
+  background1 = loadImage("fall.png");
+  background2 = loadImage("spring.png");
+  currentbackground = background1;
+  gif1 = new Gif(this, "petals.gif");
+  gif1.loop();
   recalculateConstants();
   boids = new ArrayList<Boid>();
   avoids = new ArrayList<Avoid>();
@@ -37,9 +47,6 @@ void setup () {
   //    boids.add(new Boid(x + random(3), y + random(3)));
     }
   }
-  
-  background(0);
-  
   setupWalls();
 }
 
@@ -72,9 +79,20 @@ void setupCircle() {
 
 void draw () {
   noStroke();
-  colorMode(HSB);
+  colorMode(RGB);
   fill(0, 100);
   rect(0, 0, width, height);
+  currentbackground.resize(width, height);
+  background(currentbackground);
+  /*backgroundX -= 1; // Modifica questa velocità per regolare la velocità dello scorrimento
+
+  // Verifica se l'immagine ha superato l'intera finestra
+  if (backgroundX <= -width) {
+    backgroundX = 0; // Torna all'inizio per creare un loop
+  }
+
+  // Disegna l'immagine di sfondo
+  image(img, backgroundX, 0);*/
 
 
   if (tool == "erase") {
@@ -125,27 +143,33 @@ void keyPressed () {
     globalScale /= 0.8;
   } else if (key == '1') { // tipo di bacchetta 1: evita altri boids -> dissonanza
      // option_friend = option_friend ? false : true;
+     currentbackground = background1;
      option_friend = false;
      option_crowd = false;
      option_cohese = false;
+     option_avoid = false;
      option_noise = true;
+     option_changeColor = false;
      message("Turned friend allignment " + on(option_friend));
   } else if (key == '2') { // tipo di bacchetta 2: allinea boids -> consonanza
      // option_crowd = option_crowd ? false : true;
+     currentbackground = background2;
      option_friend = true;
      option_crowd = true;
      option_cohese = true;
+     option_avoid = true;
      option_noise = false;
+     option_changeColor = true;
      message("Turned crowding avoidance " + on(option_crowd));
   } else if (key == '3') { // tipo di bacchetta 3: cambia colore ai boids on -> continuously changing colors; off -> colors remain the same
-     option_changeColor = option_changeColor ? false : true;
+     //option_changeColor = option_changeColor ? false : true;
      message("Changed boids color " + on(option_changeColor));
   }
   else if (key == '4') {
-     option_avoid = option_avoid ? false : true;
+     //option_avoid = option_avoid ? false : true;
      message("Turned obstacle avoidance " + on(option_avoid));
   }else if (key == '5') {
-     option_cohese = option_cohese ? false : true;
+     //option_cohese = option_cohese ? false : true;
      message("Turned cohesion " + on(option_cohese));
   }else if (key == '6') {
      //option_noise = option_noise ? false : true;
