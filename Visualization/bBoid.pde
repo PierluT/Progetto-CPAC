@@ -47,7 +47,7 @@ class Boid {
     avoidObjects.mult(3);
     if (!option_avoid) avoidObjects.mult(0);
 
-    noise.mult(0.3);
+    noise.mult(0.1);
     if (!option_noise) noise.mult(0);
 
     cohese.mult(1);

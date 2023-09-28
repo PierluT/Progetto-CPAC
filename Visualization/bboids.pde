@@ -58,9 +58,9 @@ void setup () {
 
 // haha
 void recalculateConstants () {
-  maxSpeed = 2.1 * globalScale;
+  maxSpeed = 1.5 * globalScale;
   friendRadius = 60 * globalScale;
-  crowdRadius = (friendRadius / 1.3);
+  crowdRadius = (friendRadius / 1.1); // era /1.3
   avoidRadius = 90 * globalScale;
   coheseRadius = friendRadius;
 }
