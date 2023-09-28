@@ -35,10 +35,10 @@ class Boid {
     PVector allign = getAverageDir();
     PVector avoidDir = getAvoidDir(); 
     PVector avoidObjects = getAvoidAvoids();
-    PVector noise = new PVector(random(2) - 1, random(2) -1);
+    PVector noise = new PVector(random(2) - 1, random(2) - 1);
     PVector cohese = getCohesion();
 
-    allign.mult(1);
+    allign.mult(1.5);
     if (!option_friend) allign.mult(0);
     
     avoidDir.mult(1);
@@ -47,7 +47,7 @@ class Boid {
     avoidObjects.mult(3);
     if (!option_avoid) avoidObjects.mult(0);
 
-    noise.mult(0.1);
+    noise.mult(0.3);
     if (!option_noise) noise.mult(0);
 
     cohese.mult(1);
@@ -229,9 +229,11 @@ class Boid {
     // Disegna il frame corrente della GIF
     //tint(0, 100, seasonShade);
     if(option_changeColor){
-      tint(0, shade+50, lerp(0,100,0.1));
+      //tint(lerp(0,255,1), shade+50, lerp(0,255,1));
+      tint(shade+50, lerp(0,255,1), lerp(0,255,1));
     } else {
-      tint(shade+50, lerp(0,255,0.1), 0);
+      tint(lerp(0,255,1), shade+50, lerp(0,255,1));
+      //tint(shade+50, lerp(0,255,1), 0);
     }
     image(currentGif, 0, 0, 200, 200);
     popMatrix();

@@ -38,7 +38,7 @@ void setup () {
   background1 = loadImage("fall.png");
   background2 = loadImage("spring.png");
   currentbackground = background1;
-  gif1 = new Gif(this, "leaf.gif");
+  gif1 = new Gif(this, "leaf3.gif");
   gif2 = new Gif(this, "butterfly.gif");
   //gif1.loop();
   //gif2.loop();
