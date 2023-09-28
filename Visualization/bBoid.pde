@@ -233,7 +233,7 @@ class Boid {
     } else {
       tint(shade+50, lerp(0,255,0.1), 0);
     }
-    image(gif1, 0, 0, 200, 200); // Sostituisci le dimensioni con quelle desiderate
+    image(currentGif, 0, 0, 200, 200);
     popMatrix();
   }
 

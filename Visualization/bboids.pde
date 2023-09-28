@@ -6,6 +6,8 @@ PImage background1;
 PImage background2;
 PImage currentbackground;
 Gif gif1;
+Gif gif2;
+Gif currentGif;
 float backgroundX=0;
 
 float globalScale = .91;
@@ -21,8 +23,8 @@ float coheseRadius;
 
 boolean option_friend = true;
 boolean option_crowd = true;
-boolean option_avoid = true;
-boolean option_noise = false; // false = still brushes at the beginning
+boolean option_avoid = false;
+boolean option_noise = true; // false = still brushes at the beginning
 boolean option_cohese = true;
 boolean option_changeColor = false;
 
@@ -36,8 +38,12 @@ void setup () {
   background1 = loadImage("fall.png");
   background2 = loadImage("spring.png");
   currentbackground = background1;
-  gif1 = new Gif(this, "petals.gif");
-  gif1.loop();
+  gif1 = new Gif(this, "leaf.gif");
+  gif2 = new Gif(this, "butterfly.gif");
+  //gif1.loop();
+  //gif2.loop();
+  currentGif = gif1;
+  currentGif.loop();
   recalculateConstants();
   boids = new ArrayList<Boid>();
   avoids = new ArrayList<Avoid>();
@@ -144,20 +150,24 @@ void keyPressed () {
   } else if (key == '1') { // tipo di bacchetta 1: evita altri boids -> dissonanza
      // option_friend = option_friend ? false : true;
      currentbackground = background1;
+     currentGif = gif1;
+     currentGif.loop();
      option_friend = false;
      option_crowd = false;
      option_cohese = false;
-     option_avoid = false;
+     //option_avoid = false;
      option_noise = true;
      option_changeColor = false;
      message("Turned friend allignment " + on(option_friend));
   } else if (key == '2') { // tipo di bacchetta 2: allinea boids -> consonanza
      // option_crowd = option_crowd ? false : true;
      currentbackground = background2;
+     currentGif = gif2;
+     currentGif.loop();
      option_friend = true;
      option_crowd = true;
      option_cohese = true;
-     option_avoid = true;
+     //option_avoid = false;
      option_noise = false;
      option_changeColor = true;
      message("Turned crowding avoidance " + on(option_crowd));
