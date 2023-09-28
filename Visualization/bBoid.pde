@@ -7,7 +7,7 @@ class Boid {
 
   // timers
   int thinkTimer = 0;
-
+  float seasonShade;
 
   Boid (float xx, float yy) {
     move = new PVector(0, 0);
@@ -57,9 +57,11 @@ class Boid {
     if (option_changeColor){
       shade += getAverageColor() * 0.1;
       shade += (random(3) - 1) ;
-      shade = (shade + 255) % 255; //max(0, min(255, shade));
+      shade = (shade + 255) % 255; //max(0, min(255, shade));*/
+      //seasonShade = map(shade, 0, 255, 150, 255);
     }
     
+    //fill(shade);
     stroke(0, 255, 160);
 
     move.add(allign);
@@ -189,6 +191,8 @@ class Boid {
     }
   }
 
+  int currentFrame = 0;
+
   void draw () {
     /*for ( int i = 0; i < friends.size(); i++) {
       Boid f = friends.get(i);
@@ -206,12 +210,30 @@ class Boid {
     vertex(-7* globalScale, -7* globalScale);
     endShape(CLOSE);
     popMatrix();*/
-    pushMatrix();
+    
+    // draw png: 
+    /*pushMatrix();
     translate(pos.x, pos.y);
     rotate(move.heading());
     imageMode(CENTER);
     tint(shade, 90, 200);
     image(img, 0, 0, 100, 100);
+    popMatrix();*/
+    
+    // draw gif:
+    pushMatrix();
+    translate(pos.x, pos.y);
+    rotate(move.heading());
+    imageMode(CENTER);
+  
+    // Disegna il frame corrente della GIF
+    //tint(0, 100, seasonShade);
+    if(option_changeColor){
+      tint(0, shade+50, lerp(0,100,0.1));
+    } else {
+      tint(shade+50, lerp(0,255,0.1), 0);
+    }
+    image(currentGif, 0, 0, 200, 200);
     popMatrix();
   }
 
