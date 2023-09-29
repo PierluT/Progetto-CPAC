@@ -5,6 +5,7 @@ F
 C
 F
 C
+Cdim
 G
 F
 G
@@ -32,6 +33,7 @@ G
 G
 C
 G
+Fdim
 D
 F
 G
@@ -49,6 +51,7 @@ C
 D
 G
 Bb
+Ebdim
 C
 F
 F
@@ -65,12 +68,13 @@ C
 G
 C
 F
+Abdim
 C
 F
 G
 C
 G
-G
+Bb
 G
 F
 C
@@ -85,12 +89,15 @@ Bb
 C
 C
 D
+Bbdim
 G
 G
 G
 F
 G
 C
+Dbdim
+
 G
 F
 F
@@ -112,4 +119,6 @@ G
 G
 F
 D
+F#dim
 F
+
