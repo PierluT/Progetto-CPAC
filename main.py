@@ -3,17 +3,18 @@ import pandas as pd
 from collections import Counter
 import time
 import random
+import keyboard
 from markov import Markov
 from dizionari import scale_midi_per_accordo,chords_midi_dict
-from classes import Nota,OscManager,Accordo,Composizione, Battuta
-from tempo import Grammar_Sequence, metronome_grammar,default_word_dur,basic_grammar
+from classes import Nota,OscManager,Accordo,Composizione, Battuta,MelodiaProcessor,BattuteProcessor
+from tempo import Grammar_Sequence,default_word_dur,basic_grammar
 
 accordo_iniziale = 'C'
 sigla_accordo = ""
 risposta = ""
 prefisso = "dim"
 # variabili 
-numero_figure_metriche = []
+#numero_figure_metriche = []
 lunghezza_composizione = 0
 sequenza_ritmica_melodia = []
 sequenza_ritmica_melodia_divisa = [] 
@@ -38,10 +39,59 @@ compositore = Composizione()
 grammar = Grammar_Sequence(basic_grammar)
 markov = Markov()
 
-#futuro main
 birgrammi_consonanti = markov.calcola_bigrammi_consonanti()
 bigrammi_dissonanti = markov.calcola_bigrammi_dissonanti()
 
+if __name__=="__main__":
+
+
+ # GENERO MELODIA CONTINUA CONSONANTE
+    while True:
+        count = 0
+        lunghezza_composizione_continua = 2
+        sigla_accordo_iniziale_continuo = 'C'
+        sequenza_accordi_consonanti_continui = []
+        melodia_totale_continua = []
+        START_SEQUENCE_CONTINUA=["M",]*lunghezza_composizione_continua
+        sequenza_ritmica_melodia_continua,seqs = grammar.create_sequence(START_SEQUENCE_CONTINUA)
+        sequenza_ritmica_melodia_continua_divisa = grammar.dividi_sequenza_ritmica_melodia(sequenza_ritmica_melodia_continua)
+
+        for i in range(lunghezza_composizione_continua):
+            sigla_accordo = markov.predict_next_state(sigla_accordo_iniziale_continuo,birgrammi_consonanti)
+            accordo = Accordo()
+            accordo.set_tipologia("consonanza")
+            accordo.set_sigla(sigla_accordo)
+            accordo.set_note(chords_midi_dict[sigla_accordo][0],chords_midi_dict[sigla_accordo][1],chords_midi_dict[sigla_accordo][2])
+            sequenza_accordi_consonanti_continui.append(accordo)
+            sigla_accordo_iniziale_continuo = sigla_accordo
+
+        print(sequenza_accordi_consonanti_continui)
+        numero_figure_metriche_continue = grammar.numero_figurazioni(sequenza_ritmica_melodia_continua_divisa)
+        print(numero_figure_metriche_continue)
+        
+        for element in sequenza_accordi_consonanti_continui:
+            note_battuta = compositore.genera_melodia_per_battuta(element, numero_figure_metriche_continue[count])
+            #print(note_battuta)
+            melodia_totale_continua.append(note_battuta)
+            count += 1
+        # in questo punto conosco melodia totale e sequenza ritmica divisa
+        melodia_processor_continua = MelodiaProcessor(melodia_totale_continua,sequenza_ritmica_melodia_continua_divisa)
+        melodia_definitiva_continua_con_ritmo= melodia_processor_continua.processa_melodia()
+
+        composizione_totale_continua = BattuteProcessor()
+        totale_battute_continue = composizione_totale_continua.elabora_melodia(sequenza_accordi_consonanti_continui,melodia_definitiva_continua_con_ritmo)
+
+        # MESSAGGI OSC MELDIA ED ARMONIA
+        for battuta in totale_battute_continue:
+            #mando_composizione.send_message("/synth_control_accordi",['stop'])
+            mando_composizione.send_message("/synth_control_accordi",['chord3',battuta.accordo.nota1,battuta.accordo.nota2,battuta.accordo.nota3])
+            for nota in battuta.note:
+                print(nota.dur)
+                mando_composizione.send_message("/synth_control_melodia",['nota',nota.midinote,nota.dur])
+                time.sleep(0.5)
+ 
+                
+# GENERAZIONE TRAMITE BACCHETTA
 while True:
 
     risposta = input("vuoi continuare a comporre? (y/n):")
@@ -61,8 +111,7 @@ while True:
             accordo.set_note(chords_midi_dict[sigla_accordo][0],chords_midi_dict[sigla_accordo][1],chords_midi_dict[sigla_accordo][2])
             sequenza_accordi_per_scale.append(accordo)
             accordo_iniziale = sigla_accordo
-            scala_da_usare = scale_midi_per_accordo[sigla_accordo]
-            scale_da_usare.append(scala_da_usare)
+
         else :
             choosen_chord_sequence = bigrammi_dissonanti
             print("dissonanza")
@@ -74,6 +123,7 @@ while True:
             accordo.set_note(chords_midi_dict[sigla_accordo][0],chords_midi_dict[sigla_accordo][1],chords_midi_dict[sigla_accordo][2])
             sequenza_accordi_per_scale.append(accordo)
             accordo_iniziale = sigla_accordo
+
     else : break 
 
 # INIZIO COMPOSIZIONE 
@@ -81,13 +131,7 @@ START_SEQUENCE=["M",]*lunghezza_composizione
 sequenza_ritmica_melodia,seqs = grammar.create_sequence(START_SEQUENCE)
 sequenza_ritmica_melodia_divisa = grammar.dividi_sequenza_ritmica_melodia(sequenza_ritmica_melodia)
 
-for element in sequenza_ritmica_melodia_divisa: 
-     #numero note per battuta
-     contatore_note = 0
-     contatore_note += len(element)
-     print(contatore_note)
-     numero_figure_metriche.append(contatore_note)
-
+numero_figure_metriche = grammar.numero_figurazioni(sequenza_ritmica_melodia_divisa)
 
 for element in sequenza_accordi_per_scale:
      note_battuta = compositore.genera_melodia_per_battuta(element, numero_figure_metriche[pos])
@@ -95,39 +139,13 @@ for element in sequenza_accordi_per_scale:
      melodia_totale.append(note_battuta)
      pos += 1
 
-# assegno la durata alle note 
-for numeri_note,lettere_note in zip(melodia_totale,sequenza_ritmica_melodia_divisa):
-    sottosequenza = []
-    for numero,lettera in zip(numeri_note,lettere_note):
-            durata = default_word_dur.get(lettera, 0)
-            nota = Nota()
-            nota.midinote = numero
-            nota.dur = durata
-            sottosequenza.append(nota)
-    melodia_definitiva_con_ritmo.append(sottosequenza)
+# in questo punto conosco melodia totale e sequenza ritmica divisa
+melodia_processor = MelodiaProcessor(melodia_totale,sequenza_ritmica_melodia_divisa)
+melodia_definitiva_con_ritmo= melodia_processor.processa_melodia()
 
-# setto la battuta con l'oggetto Accordo e l'oggetto note 
-for accordo,array_note_battuta in zip(sequenza_accordi_per_scale,melodia_definitiva_con_ritmo):
-    battuta = Battuta()
-    battuta.set_accordo(accordo)
-    for a in array_note_battuta:
-         #print("sono arrivato qua :"+ str(a.dur))
-        battuta.set_note(a)
-    totale_battute.append(battuta)
+composizione_totale = BattuteProcessor()
+totale_battute = composizione_totale.elabora_melodia(sequenza_accordi_per_scale,melodia_definitiva_con_ritmo)
 
-
-"""
-#  ASSEGNO AD OGNI ACCORDO LA DURATA IN BASE ALLA GRAMMAR BASE
-for element in sequenza_accordi_per_scale:
-    pos_metrica_accordi= 0
-     #print("la durata di questo accordo è: "+ str(element.durata))
-    element.set_durata(grammar.sequenza_ritmica_accordi(START_SEQUENCE)[pos_metrica_accordi])
-    pos_metrica_accordi += 1
-
-for element in sequenza_accordi_per_scale:
-     print("la durata di questo accordo è: "+ str(element.durata))
-
-"""
 
 
 # MESSAGGI OSC MELDIA ED ARMONIA

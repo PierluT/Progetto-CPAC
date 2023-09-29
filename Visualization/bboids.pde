@@ -129,7 +129,7 @@ void draw () {
      option_noise = true;
      option_changeColor = false;
      message("Turned friend allignment " + on(option_friend));
-  } else if (signal == 1) { // tipo di bacchetta 2: allinea boids -> consonanza
+  } else if (signal == 2) { // tipo di bacchetta 2: allinea boids -> consonanza
      // option_crowd = option_crowd ? false : true;
      println("Ho ricevuto : " + signal);
      boids.add(new Boid(random(width), random(height)));

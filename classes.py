@@ -6,7 +6,8 @@ from pythonosc import udp_client
 from dizionari import chords_midi_dict,basic_grammar,scale_midi_per_accordo
 import argparse
 from pythonosc import udp_client
-from tempo import default_word_dur
+from tempo import default_word_dur, Grammar_Sequence
+from markov import Markov
 
 ID_START =0
 scala_corrente = []
@@ -18,9 +19,8 @@ nota4 = 0
 note_generate =[]
 
 class Nota:
-    def __init__(self,id =0,tipologia= "",midinote=0,dur =0,amp =0,BPM=80):
+    def __init__(self,id =0,midinote=0,dur =0,amp =0,BPM=80):
          self.id = ID_START
-         self.tipologia = tipologia
          self.midinote=midinote
          self.amp=amp
          self.dur=dur
@@ -35,7 +35,7 @@ class Nota:
     
 class Accordo:
 
-     def __init__(self,amp = 1,BPM= 80,nota1 = 0,nota2 = 0,nota3 = 0,sigla = "",durata = 0):
+     def __init__(self,amp = 1,nota1 = 0,nota2 = 0,nota3 = 0,sigla = "",durata = 0):
           self.durata = durata
           self.amp = amp
           
@@ -130,6 +130,40 @@ class Composizione(Nota, Accordo):
             return note_generate
 
           return tuple(note_generate)
+     
+class MelodiaProcessor:
+    def __init__(self, melodia_totale, sequenza_ritmica_melodia_divisa):
+        self.melodia_totale = melodia_totale
+        self.sequenza_ritmica_melodia_divisa = sequenza_ritmica_melodia_divisa
+        self.melodia_definitiva_con_ritmo = []
+
+    def processa_melodia(self):
+        for numeri_note, lettere_note in zip(self.melodia_totale, self.sequenza_ritmica_melodia_divisa):
+            sottosequenza = []
+            for numero, lettera in zip(numeri_note, lettere_note):
+                durata = default_word_dur.get(lettera, 0)
+                nota = Nota()
+                nota.midinote = numero
+                nota.dur = durata
+                sottosequenza.append(nota)
+            self.melodia_definitiva_con_ritmo.append(sottosequenza)
+        
+        return self.melodia_definitiva_con_ritmo
+
+class BattuteProcessor:
+    def __init__(self):
+        self.totale_battute = []
+
+    def elabora_melodia(self, sequenza_accordi_per_scale, melodia_definitiva_con_ritmo):
+        for accordo, array_note_battuta in zip(sequenza_accordi_per_scale, melodia_definitiva_con_ritmo):
+            battuta = Battuta()
+            battuta.set_accordo(accordo)
+            for nota in array_note_battuta:
+                battuta.set_note(nota)
+            self.totale_battute.append(battuta)
+            
+        return self.totale_battute
+
 
 class OscManager:
 

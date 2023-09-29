@@ -8,8 +8,6 @@ chords = []
 class Markov:
     def __init__(self):
         self.choosen_chord_sequence = []  # Inizializza la lista vuota
-        self.probabilities_matrix_consonant = []
-        self.probabilities_matrix_dissonant = []
 
     def calcola_bigrammi_consonanti(self):
             #Read consonant Chord Collection file
@@ -20,6 +18,8 @@ class Markov:
             n = 2
             consonant_chords = data_consonant_chords['chords'].values
             ngrams = zip(*[consonant_chords[i:] for i in range(n)])
+            #print("sto stampando ngrams: ")
+            #print(ngrams)
             consonant_bigrams = [" ".join(ngram) for ngram in ngrams]
             consonant_bigrams[:5]
 
@@ -86,22 +86,8 @@ class Markov:
         # create list of possible options for the next chord
         # options are given by key
         options = [key.split(' ')[1] for key in count_appearance.keys()]
+        #print(options)
         # create  list of probability distribution
         probabilities = list(count_appearance.values())
         # return random prediction
         return np.random.choice(options, p= probabilities)
-"""
-    def generate_sequence(chord:str=None, data:list=choosen_chord_sequence, length:int=1):
-        #Generate sequence of defined length.
-        # create list to store future chords
-        for n in range(length):
-            # append next chord for the list
-            chords.append(predict_next_state(chord))
-            # use last chord in sequence to predict next chord
-            chord = chords[-1]
-        return chords  
-"""
-
-if __name__=='__main__':
-     x = Markov()
-     print(x.calcola_bigrammi_consonanti())
