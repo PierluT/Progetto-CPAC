@@ -10,7 +10,7 @@ class Markov:
 
     def calcola_bigrammi_consonanti(self):
             #Read consonant Chord Collection file
-            data_consonant_chords = pd.read_csv("C:\\Users\\pierl\\Desktop\\MMI\\CPAC\\cpac_course_2022\\labs\\Progetto\\data\\consonant_chords.csv")
+            data_consonant_chords = pd.read_csv("C:\\Users\\pierl\\Desktop\\MMI\\CPAC\\cpac_course_2022\\labs\\Progetto\\data\\sequenza.c.csv")
             data_consonant_chords
 
             # Generate Bigrams
@@ -24,7 +24,7 @@ class Markov:
     
     def calcola_bigrammi_dissonanti(self):
             #Read dissonant Chord Collection file
-            data_dissonant_chords = pd.read_csv("C:\\Users\\pierl\\Desktop\\MMI\\CPAC\\cpac_course_2022\\labs\\Progetto\\data\\dissonant_chords.csv")
+            data_dissonant_chords = pd.read_csv("C:\\Users\\pierl\\Desktop\\MMI\\CPAC\\cpac_course_2022\\labs\\Progetto\\data\\sequenza.d.csv")
             data_dissonant_chords
 
             # Generate Bigrams
