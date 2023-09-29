@@ -18,6 +18,11 @@ class Boid {
     shade = random(255);
     friends = new ArrayList<Boid>();
   }
+  
+  /*
+  void applyWind(PVector wind){
+    move.add(wind);
+  }*/
 
   void go () {
     increment();

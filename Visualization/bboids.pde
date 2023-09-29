@@ -1,4 +1,13 @@
 import gifAnimation.*;
+import processing.net.*;
+import oscP5.*;
+import netP5.*;
+
+//Client client;
+int signal=-1;
+OscP5 oscP5;
+NetAddress myRemoteLocation;
+
 
 ArrayList<Boid> boids;
 ArrayList<Avoid> avoids;
@@ -8,7 +17,7 @@ PImage currentbackground;
 Gif gif1;
 Gif gif2;
 Gif currentGif;
-float backgroundX=0;
+//PVector wind;
 
 float globalScale = .91;
 float eraseRadius = 20;
@@ -35,11 +44,11 @@ String messageText = "";
 void setup () {
   size(1024, 576);
   textSize(16);
-  background1 = loadImage("fall.png");
-  background2 = loadImage("spring.png");
+  background1 = loadImage("fall1.png");
+  background2 = loadImage("spring1.png");
   currentbackground = background1;
   gif1 = new Gif(this, "leaf3.gif");
-  gif2 = new Gif(this, "butterfly.gif");
+  gif2 = new Gif(this, "bf5.gif");
   //gif1.loop();
   //gif2.loop();
   currentGif = gif1;
@@ -54,6 +63,10 @@ void setup () {
     }
   }
   setupWalls();
+  //wind = new PVector(random(2)-1,random(2)-1);
+  //client = new Client(this, "127.0.0.1", 12345);
+  oscP5 = new OscP5(this, 12345);
+  myRemoteLocation = new NetAddress("127.0.0.1", 12345);
 }
 
 // haha
@@ -99,8 +112,7 @@ void draw () {
 
   // Disegna l'immagine di sfondo
   image(img, backgroundX, 0);*/
-
-
+  
   if (tool == "erase") {
     noFill();
     stroke(0, 100, 260);
@@ -116,6 +128,7 @@ void draw () {
   for (int i = 0; i <boids.size(); i++) {
     Boid current = boids.get(i);
     current.go();
+    //current.applyWind(wind);
     current.draw();
   }
 
@@ -132,7 +145,7 @@ void draw () {
 }
 
 void keyPressed () {
-  if (key == 'q') { // add if osc signal is received, then add new boids randomly
+  if (key == 'q') {
     tool = "boids";
     message("Add boids");
   } else if (key == 'w') {
@@ -147,7 +160,7 @@ void keyPressed () {
   } else if (key == '=') {
       message("Increased Scale");
     globalScale /= 0.8;
-  } else if (key == '1') { // tipo di bacchetta 1: evita altri boids -> dissonanza
+  } else if (key == '1' || signal == 0) { // tipo di bacchetta 1: evita altri boids -> dissonanza
      // option_friend = option_friend ? false : true;
      currentbackground = background1;
      currentGif = gif1;
@@ -159,7 +172,7 @@ void keyPressed () {
      option_noise = true;
      option_changeColor = false;
      message("Turned friend allignment " + on(option_friend));
-  } else if (key == '2') { // tipo di bacchetta 2: allinea boids -> consonanza
+  } else if (key == '2' || signal == 1) { // tipo di bacchetta 2: allinea boids -> consonanza
      // option_crowd = option_crowd ? false : true;
      currentbackground = background2;
      currentGif = gif2;
@@ -212,13 +225,29 @@ String on(boolean in) {
 void mousePressed () {
   switch (tool) {
   case "boids":
-    boids.add(new Boid(mouseX, mouseY));
+    boids.add(new Boid(random(width), random(height)));
     message(boids.size() + " Total Boid" + s(boids.size()));
     break;
   case "avoids":
     avoids.add(new Avoid(mouseX, mouseY));
     break;
   }
+}
+
+int oscEvent(OscMessage theOscMessage){
+  // Ricevi i dati OSC
+  if (theOscMessage.checkAddrPattern("/data")) {
+    int value_received = theOscMessage.get(0).intValue();
+    
+    println("Value received: " + value_received);
+    if(value_received == 0){
+      signal = 0;
+    }
+    else if (value_received == 1){
+      signal = 1;
+    }
+  }
+  return signal;
 }
 
 void erase () {
