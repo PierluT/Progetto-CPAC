@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 from collections import Counter
 import time
-import argparse
 import random
 from markov import Markov
 from dizionari import scale_midi_per_accordo,chords_midi_dict
@@ -12,7 +11,8 @@ from tempo import Grammar_Sequence, metronome_grammar,default_word_dur,basic_gra
 accordo_iniziale = 'C'
 sigla_accordo = ""
 risposta = ""
-
+prefisso = "dim"
+# variabili 
 numero_figure_metriche = []
 lunghezza_composizione = 0
 sequenza_ritmica_melodia = []
@@ -43,6 +43,7 @@ birgrammi_consonanti = markov.calcola_bigrammi_consonanti()
 bigrammi_dissonanti = markov.calcola_bigrammi_dissonanti()
 
 while True:
+
     risposta = input("vuoi continuare a comporre? (y/n):")
 
     if risposta == 'y':
@@ -52,23 +53,7 @@ while True:
         if valore_provvisorio_scelta_accordo == 0 :
             choosen_chord_sequence = birgrammi_consonanti
             print("consonanza")
-            # PROBLEMA 'C'
-            sigla_accordo = markov.predict_next_state('C',choosen_chord_sequence)
-            print("questo è l'accordo predetto: "+ sigla_accordo)
-            accordo = Accordo()
-            accordo.set_tipologia("consonanza")
-            accordo.set_sigla(sigla_accordo)
-            accordo.set_note(chords_midi_dict[sigla_accordo][0],chords_midi_dict[sigla_accordo][1],chords_midi_dict[sigla_accordo][2])
-            #accordo.set_durata()
-            sequenza_accordi_per_scale.append(accordo)
-            #accordo_iniziale = sigla_accordo
-            scala_da_usare = scale_midi_per_accordo[sigla_accordo]
-            scale_da_usare.append(scala_da_usare)
-        else :
-            choosen_chord_sequence = bigrammi_dissonanti
-            print("dissonanza")
-             # PROBLEMA 'C'
-            sigla_accordo = markov.predict_next_state('C',choosen_chord_sequence)
+            sigla_accordo = markov.predict_next_state(accordo_iniziale,choosen_chord_sequence)
             print("questo è l'accordo predetto: "+ sigla_accordo)
             accordo = Accordo()
             accordo.set_tipologia("consonanza")
@@ -76,18 +61,27 @@ while True:
             accordo.set_note(chords_midi_dict[sigla_accordo][0],chords_midi_dict[sigla_accordo][1],chords_midi_dict[sigla_accordo][2])
             sequenza_accordi_per_scale.append(accordo)
             accordo_iniziale = sigla_accordo
-            #scala_da_usare = scale_midi_per_accordo[sigla_accordo]
-            #scale_da_usare.append(scala_da_usare)
-            #print(scala_da_usare)
+            scala_da_usare = scale_midi_per_accordo[sigla_accordo]
+            scale_da_usare.append(scala_da_usare)
+        else :
+            choosen_chord_sequence = bigrammi_dissonanti
+            print("dissonanza")
+            sigla_accordo = markov.predict_next_state(accordo_iniziale,choosen_chord_sequence)
+            print("questo è l'accordo predetto: "+ sigla_accordo)
+            accordo = Accordo()
+            accordo.set_tipologia("consonanza")
+            accordo.set_sigla(sigla_accordo)
+            accordo.set_note(chords_midi_dict[sigla_accordo][0],chords_midi_dict[sigla_accordo][1],chords_midi_dict[sigla_accordo][2])
+            sequenza_accordi_per_scale.append(accordo)
+            accordo_iniziale = sigla_accordo
     else : break 
 
 # INIZIO COMPOSIZIONE 
-
 START_SEQUENCE=["M",]*lunghezza_composizione
 sequenza_ritmica_melodia,seqs = grammar.create_sequence(START_SEQUENCE)
 sequenza_ritmica_melodia_divisa = grammar.dividi_sequenza_ritmica_melodia(sequenza_ritmica_melodia)
 
-for element in sequenza_ritmica_melodia_divisa:
+for element in sequenza_ritmica_melodia_divisa: 
      #numero note per battuta
      contatore_note = 0
      contatore_note += len(element)
@@ -101,7 +95,7 @@ for element in sequenza_accordi_per_scale:
      melodia_totale.append(note_battuta)
      pos += 1
 
-# ASSEGNO LA DURATA ALLE NOte GENERATE 
+# assegno la durata alle note 
 for numeri_note,lettere_note in zip(melodia_totale,sequenza_ritmica_melodia_divisa):
     sottosequenza = []
     for numero,lettera in zip(numeri_note,lettere_note):
@@ -112,6 +106,7 @@ for numeri_note,lettere_note in zip(melodia_totale,sequenza_ritmica_melodia_divi
             sottosequenza.append(nota)
     melodia_definitiva_con_ritmo.append(sottosequenza)
 
+# setto la battuta con l'oggetto Accordo e l'oggetto note 
 for accordo,array_note_battuta in zip(sequenza_accordi_per_scale,melodia_definitiva_con_ritmo):
     battuta = Battuta()
     battuta.set_accordo(accordo)
@@ -119,6 +114,7 @@ for accordo,array_note_battuta in zip(sequenza_accordi_per_scale,melodia_definit
          #print("sono arrivato qua :"+ str(a.dur))
         battuta.set_note(a)
     totale_battute.append(battuta)
+
 
 """
 #  ASSEGNO AD OGNI ACCORDO LA DURATA IN BASE ALLA GRAMMAR BASE
@@ -131,15 +127,15 @@ for element in sequenza_accordi_per_scale:
 for element in sequenza_accordi_per_scale:
      print("la durata di questo accordo è: "+ str(element.durata))
 
-print('Play the sequence with supercollider:')
-
 """
+
+
+# MESSAGGI OSC MELDIA ED ARMONIA
 for battuta in totale_battute:
-     print("nota 1: " + str(battuta.accordo.nota1) + " nota 2: " + str(battuta.accordo.nota2) +" nota 3: " +str(battuta.accordo.nota3))
+     #mando_composizione.send_message("/synth_control_accordi",['stop'])
      mando_composizione.send_message("/synth_control_accordi",['chord3',battuta.accordo.nota1,battuta.accordo.nota2,battuta.accordo.nota3])
      for nota in battuta.note:
           print(nota.dur)
           mando_composizione.send_message("/synth_control_melodia",['nota',nota.midinote,nota.dur])
-          time.sleep(1)
+          time.sleep(0.5)
 
-mando_composizione.send_message("/synth_control_melodia",['quit',0])

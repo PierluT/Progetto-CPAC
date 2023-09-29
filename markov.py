@@ -1,16 +1,19 @@
 import numpy as np
 import pandas as pd
 from collections import Counter
+from pathlib import Path
 
 chords = []
 
 class Markov:
     def __init__(self):
         self.choosen_chord_sequence = []  # Inizializza la lista vuota
+        self.probabilities_matrix_consonant = []
+        self.probabilities_matrix_dissonant = []
 
     def calcola_bigrammi_consonanti(self):
             #Read consonant Chord Collection file
-            data_consonant_chords = pd.read_csv("C:\\Users\\pierl\\Desktop\\MMI\\CPAC\\cpac_course_2022\\labs\\Progetto\\data\\consonant_chords.csv")
+            data_consonant_chords = pd.read_csv("C:\\Users\\pierl\\Desktop\\MMI\\CPAC\\cpac_course_2022\\labs\\Progetto\\data\\sequenza.c.csv")
             data_consonant_chords
 
             # Generate Bigrams
@@ -24,7 +27,7 @@ class Markov:
     
     def calcola_bigrammi_dissonanti(self):
             #Read dissonant Chord Collection file
-            data_dissonant_chords = pd.read_csv("C:\\Users\\pierl\\Desktop\\MMI\\CPAC\\cpac_course_2022\\labs\\Progetto\\data\\dissonant_chords.csv")
+            data_dissonant_chords = pd.read_csv("C:\\Users\\pierl\\Desktop\\MMI\\CPAC\\cpac_course_2022\\labs\\Progetto\\data\\sequenza.d.csv")
             data_dissonant_chords
 
             # Generate Bigrams
@@ -35,6 +38,35 @@ class Markov:
             dissonant_bigrams[:5]
 
             return  dissonant_bigrams
+    
+    def initialize_matrix(self, data_consonant:list = None, data_dissonant: list = None):
+         
+         #da finire
+
+         bigrams_consonant_appearance = dict(Counter(data_consonant))
+         bigrams_dissonant_appearance = dict(Counter(data_dissonant))
+         # convert appearance into probabilities
+         for ngram in bigrams_consonant_appearance.keys():
+            #now we divide count_apparence of the current bigram / by the length of the bigrams
+            n_bigram_with_same_initial_chord = len([bigram for bigram in bigrams_consonant_appearance.keys if bigram.split(' ')[0]==ngram.split(' ')[0]])
+            bigrams_consonant_appearance[ngram] = bigrams_consonant_appearance[ngram]/ n_bigram_with_same_initial_chord
+
+         for ngram in bigrams_dissonant_appearance.keys():
+            #now we divide count_apparence of the current bigram / by the length of the bigrams
+            n_bigram_with_same_initial_chord = len([bigram for bigram in bigrams_dissonant_appearance.keys if bigram.split(' ')[0]==ngram.split(' ')[0]])
+            bigrams_dissonant_appearance[ngram] = bigrams_dissonant_appearance[ngram]/ n_bigram_with_same_initial_chord
+        
+         # create list of possible options for the next chord
+         # options are given by key
+         options = [key.split(' ')[1] for key in bigrams_consonant_appearance.keys()]
+         # create  list of probability distribution
+         probabilities = list(bigrams_consonant_appearance.values())
+
+
+
+
+         return
+         
     
 
     def predict_next_state(self,chord:str, data:list= None):
@@ -69,3 +101,7 @@ class Markov:
             chord = chords[-1]
         return chords  
 """
+
+if __name__=='__main__':
+     x = Markov()
+     print(x.calcola_bigrammi_consonanti())
