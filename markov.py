@@ -13,7 +13,7 @@ class Markov:
 
     def calcola_bigrammi_consonanti(self):
             #Read consonant Chord Collection file
-            data_consonant_chords = pd.read_csv("C:\\Users\\pierl\\Desktop\\MMI\\CPAC\\cpac_course_2022\\labs\\Progetto\\data\\sequenza.c.csv")
+            data_consonant_chords = pd.read_csv(Path("data/sequenza_c.csv"))
             data_consonant_chords
 
             # Generate Bigrams
@@ -27,7 +27,7 @@ class Markov:
     
     def calcola_bigrammi_dissonanti(self):
             #Read dissonant Chord Collection file
-            data_dissonant_chords = pd.read_csv("C:\\Users\\pierl\\Desktop\\MMI\\CPAC\\cpac_course_2022\\labs\\Progetto\\data\\sequenza.d.csv")
+            data_dissonant_chords = pd.read_csv(Path("data/sequenza_d.csv"))
             data_dissonant_chords
 
             # Generate Bigrams
@@ -41,7 +41,7 @@ class Markov:
     
     def initialize_matrix(self, data_consonant:list = None, data_dissonant: list = None):
          
-         #da finire
+         #SIMONE STA CERCANDO DI INIZIALIZZARE LA MATRICE, DA FINIRE...
 
          bigrams_consonant_appearance = dict(Counter(data_consonant))
          bigrams_dissonant_appearance = dict(Counter(data_dissonant))
