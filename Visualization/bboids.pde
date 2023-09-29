@@ -32,7 +32,7 @@ float coheseRadius;
 
 boolean option_friend = true;
 boolean option_crowd = true;
-boolean option_avoid = false;
+boolean option_avoid = true;
 boolean option_noise = true; // false = still brushes at the beginning
 boolean option_cohese = true;
 boolean option_changeColor = false;
@@ -113,6 +113,40 @@ void draw () {
   // Disegna l'immagine di sfondo
   image(img, backgroundX, 0);*/
   
+    if (signal == 0) { // tipo di bacchetta 1: evita altri boids -> dissonanza
+     // option_friend = option_friend ? false : true;
+     println("Ho ricevuto : " + signal);
+     boids.add(new Boid(random(width), random(height)));
+     message(boids.size() + " Total Boid" + s(boids.size()));
+     signal = -1;
+     currentbackground = background1;
+     currentGif = gif1;
+     currentGif.loop();
+     option_friend = false;
+     option_crowd = false;
+     option_cohese = false;
+     //option_avoid = false;
+     option_noise = true;
+     option_changeColor = false;
+     message("Turned friend allignment " + on(option_friend));
+  } else if (signal == 2) { // tipo di bacchetta 2: allinea boids -> consonanza
+     // option_crowd = option_crowd ? false : true;
+     println("Ho ricevuto : " + signal);
+     boids.add(new Boid(random(width), random(height)));
+     message(boids.size() + " Total Boid" + s(boids.size()));
+     signal = -1;
+     currentbackground = background2;
+     currentGif = gif2;
+     currentGif.loop();
+     option_friend = true;
+     option_crowd = true;
+     option_cohese = true;
+     //option_avoid = false;
+     option_noise = false;
+     option_changeColor = true;
+     message("Turned crowding avoidance " + on(option_crowd));
+  }
+  
   if (tool == "erase") {
     noFill();
     stroke(0, 100, 260);
@@ -141,6 +175,7 @@ void draw () {
   if (messageTimer > 0) {
     messageTimer -= 1; 
   }
+  
   drawGUI();
 }
 
@@ -162,6 +197,9 @@ void keyPressed () {
     globalScale /= 0.8;
   } else if (key == '1' || signal == 0) { // tipo di bacchetta 1: evita altri boids -> dissonanza
      // option_friend = option_friend ? false : true;
+     println("Ho ricevuto : " + signal);
+     boids.add(new Boid(random(width), random(height)));
+     message(boids.size() + " Total Boid" + s(boids.size()));
      currentbackground = background1;
      currentGif = gif1;
      currentGif.loop();
@@ -174,6 +212,9 @@ void keyPressed () {
      message("Turned friend allignment " + on(option_friend));
   } else if (key == '2' || signal == 1) { // tipo di bacchetta 2: allinea boids -> consonanza
      // option_crowd = option_crowd ? false : true;
+     println("Ho ricevuto : " + signal);
+     boids.add(new Boid(random(width), random(height)));
+     message(boids.size() + " Total Boid" + s(boids.size()));
      currentbackground = background2;
      currentGif = gif2;
      currentGif.loop();
