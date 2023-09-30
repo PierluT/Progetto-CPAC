@@ -12,13 +12,13 @@ from tempo import Grammar_Sequence,default_word_dur,basic_grammar
 accordo_iniziale = 'C'
 sigla_accordo = ""
 risposta = ""
-prefisso = "dim"
 # variabili 
 #numero_figure_metriche = []
 lunghezza_composizione = 0
 sequenza_ritmica_melodia = []
 sequenza_ritmica_melodia_divisa = [] 
 pos = 0
+colpo_bacchetta = False
 #variabile temporanea per note di quell'accordo
 scala_da_usare = []
 #array della successione degli accordi
@@ -44,11 +44,10 @@ bigrammi_dissonanti = markov.calcola_bigrammi_dissonanti()
 
 if __name__=="__main__":
 
-
  # GENERO MELODIA CONTINUA CONSONANTE
-    while True:
+    while not colpo_bacchetta:
         count = 0
-        lunghezza_composizione_continua = 2
+        lunghezza_composizione_continua = 4
         sigla_accordo_iniziale_continuo = 'C'
         sequenza_accordi_consonanti_continui = []
         melodia_totale_continua = []
@@ -89,8 +88,8 @@ if __name__=="__main__":
                 print(nota.dur)
                 mando_composizione.send_message("/synth_control_melodia",['nota',nota.midinote,nota.dur])
                 time.sleep(0.5)
- 
-                
+        colpo_bacchetta = True
+
 # GENERAZIONE TRAMITE BACCHETTA
 while True:
 

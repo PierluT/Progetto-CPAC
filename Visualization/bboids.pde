@@ -47,7 +47,7 @@ void setup () {
   background1 = loadImage("fall1.png");
   background2 = loadImage("spring1.png");
   currentbackground = background1;
-  gif1 = new Gif(this, "leaf3.gif");
+  gif1 = new Gif(this, "leaf4.gif");
   gif2 = new Gif(this, "bf5.gif");
   //gif1.loop();
   //gif2.loop();
@@ -285,7 +285,7 @@ int oscEvent(OscMessage theOscMessage){
       signal = 0;
     }
     else if (value_received == 1){
-      signal = 1;
+      signal = 2;
     }
   }
   return signal;
