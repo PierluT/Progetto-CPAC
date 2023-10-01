@@ -1,4 +1,7 @@
 s.boot;
+ServerOptions.outDevices;
+s.options.outDevice_('Altoparlanti (Realtek(R) Audio)');
+
 s.meter;
 NetAddr("127.0.0.1", 57120);
 // Configura il server OSC per accordi e melodia sulla stessa porta (57120)
@@ -84,7 +87,7 @@ SynthDef(\string_like_ring, {
 
 // Synth for chords
 (
-SynthDef(\harpsi, { |outbus = 0, freq = 440, amp = 1, gate = 1|
+SynthDef(\harpsi, { |outbus = 0, freq = 1000, amp = 1, gate = 1|
     var out;
     out = EnvGen.ar(Env.adsr, gate, doneAction: Done.freeSelf) * amp *
         SinOsc.ar(freq, 0.5, 0.75);
@@ -142,16 +145,7 @@ x = OSCFunc( { | msg, time, addr, port |
 			note2  = msg[3].asFloat;
 			note3  = msg[4].asFloat;
 			chord=[note1,note2, note3];
-			chord.postln();
-		};
-		if (msg[1]=='chord4'){
-			// Parse message
-			note1 = msg[2].asFloat;
-			note2  = msg[3].asFloat;
-			note3  = msg[4].asFloat;
-			note4  = msg[5].asFloat;
-			chord=[note1,note2, note3,note4];
-			chord.postln();
+			msg.postln();
 		};
 
 			(
