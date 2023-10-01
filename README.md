@@ -1,5 +1,10 @@
 # Seasonal Woodland
 
+<div style="display: flex; justify-content: space-between; margin: 20px;">
+    <img src="images/screenAutunno.png" alt="Immagine 1" width="640" height="360">
+    <img src="images/screenPrimavera.png" alt="Immagine 2" width="640" height="360">
+</div>
+
 ## Authors
 Simone Sechi
 
@@ -33,12 +38,6 @@ There are three components: the child, a wooden board and two sticks. The sticks
 * **sphere stick** : hitting the wood board with this stick directs the music composition in a prodcution of a major background chords, to give a perception of straightforwardness. In the visualization part the Autumn season becomes Spring, and the leaves are transformed into butterflies. These animals have an harmonious movement, coordinated between them.
 
 ### Visualization
-
-<div style="display: flex; justify-content: space-between; margin: 20px;">
-    <img src="images/screenAutunno.png" alt="Immagine 1" width="640" height="360">
-    <img src="images/screenPrimavera.png" alt="Immagine 2" width="640" height="360">
-</div>
-
 PROCESSING receives an OSC signal from Python:
 
 * if the message received is “1”, meaning “DISSONANCE”, the scenario changes into Fall season and a new leaf-shaped boid appears
