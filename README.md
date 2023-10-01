@@ -13,7 +13,10 @@ Pierluigi Tartabini
 
 * Musical composition and sound design
 ## Abstract
-An artistic installation that enables children to play and discover music feelings and sensations through interaction and visualization.
+Seasonal Woodland is an artistic installation that enables children to play and discover music feelings and sensations through interaction and visualization. The main aspect of the project is the music knowledge model that the kid builds himself from the interaction with the installation.
+
+The aim of the Seasonal Wood is that the children is, at the same time, an artist and a music composer with only one simple motion,that is hit the board with a stick. Based on wich stick the kid chooses to strike the board, he/she will listen and see different effects, that will learn him/her something about music basic concepts.
+
 ## Description
 Seasonal Woodland is thought to be an artistic installation following a full-fledged conversational model, involving sound and visual interaction. The target audience are children (of at least 4 years old) and the learning curve is zero, as the only requested action is that of hitting a wooden board with two different sticks, which will change the entire auditive and visive scenario.
 
@@ -28,7 +31,11 @@ There are 3 components: the children, the wood board and 2 sticks, that' re diff
 * **heart stick** : hitting the wood board with this baton directs the music composition in a prodcution of squeaky audio; in particular they will be produced diminuished chords in backgrounds and a melody taken fro randomly long intervals from the scale of the chord. In the visualization part the children will see the autumn season with the leaves movement; their trajectories are like disturbed and almost uncorrelated. They have primary color to simulate autumn behaviours.
 
 * **sphere stick** : hitting the wood board with this baton directs the music composition in a prodcution of a major background chords with a melody composed by unitary intervals starting from the tonal or the third. In the visualization part the autumn season becomes spring, and the previous leaves are transformed into butterflies. These animals has an harmonious movement, coordinated between them; furthermore if they meeet each other, they aggregate theirselves into groups.
- 
+
+### Visualization
+
+### Music
+
 
 ## Technology
 Python: audio classification and musical composition.
