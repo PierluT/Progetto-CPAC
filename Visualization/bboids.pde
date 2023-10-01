@@ -42,13 +42,13 @@ int messageTimer = 0;
 String messageText = "";
 
 void setup () {
-  size(1024, 576);
+  size(2560, 1664);
   textSize(16);
   background1 = loadImage("fall1.png");
   background2 = loadImage("spring1.png");
   currentbackground = background1;
-  gif1 = new Gif(this, "leaf4.gif");
-  gif2 = new Gif(this, "bf5.gif");
+  gif1 = new Gif(this, "foglia.gif");
+  gif2 = new Gif(this, "butterfly2.gif");
   //gif1.loop();
   //gif2.loop();
   currentGif = gif1;
