@@ -35,14 +35,14 @@ There are three components: the child, a wooden board and two sticks. The sticks
 ### Visualization
 
 <div style="display: flex; justify-content: space-between; margin: 20px;">
-    <img src="images/screenAutunno.png" alt="Immagine 1" width="200" height="150">
-    <img src="images/screenPrimavera.png" alt="Immagine 2" width="200" height="150">
+    <img src="images/screenAutunno.png" alt="Immagine 1" width="640" height="480">
+    <img src="images/screenPrimavera.png" alt="Immagine 2" width="640" height="480">
 </div>
 
 ### Music
 The music generation is composed by 2 factors: **harmony** and **melody**. 
 
-The harmony is made by the succession of the chords, if there isn't any kick the progression will be made by major chords; if the kid does some action, the progession will be influenced by the kid choice: in this case the next chord will be computed with the Markov chain model.
+The harmony is made by the succession of the chords, if there isn't any kick the progression will be made by major chords; if the child does some action, the progession will be influenced by his choice: in this case the next chord will be computed with the Markov chain model.
 
 The melody is strictly dependent from the chord: if this one is major or minor the composition is made of narrow intervals starting form first or third grade; if the chord is diminuished the melody will be made of large intervals starting from randomly positions of the derived scale.
 
@@ -55,16 +55,16 @@ Processing: graphical interface.
 ## How to run locally
 
 ### Step 1
-To try the Seasonal Woodland in your pc you have, first of all, to have installed Pyton,Processing and Supercollider.
-For the hardware part you have to get a :
-* wood table that will be hitten.
-* two types of different sticks to strike the table.
+To try the Seasonal Woodland in your pc you have, first of all, to have installed Pyton, Processing and Supercollider.
+For the hardware part you will get:
+* a wooden board that will be hitten.
+* two types of sticks to strike the table.
 * one or more piezo to detect the hits.
 * an audio card that transmits the strikes to the pc.
 
 ### Step 2
-Before running the project you have to train your audio classification script; we recommend you  to strike the table sequentially with a metronome beat,store the audio with a digital audio workstation ( like Reaper) and train your script with the extracted data.
+Before running the project you have to train your audio classification script; we recommend you to strike the table sequentially with a metronome beat, store the audio with a digital audio workstation (like Reaper) and train your script with the extracted data.
 
 ### Step 3
-You have to initialize the NetAddress ( and the relative port), the synthetizers,the OscReciever and the OscFunc in Supercollider to allow the comunication between Python and Supercollider. After that you have to run the main.py file and (......); once you did it you can start playing with the Seasonal Woodland.
+You have to initialize the NetAddress (and the relative port), the synthetizers, the OscReciever and the OscFunc in Supercollider to allow the comunication between Python and Supercollider. You will have to start Processing and after that you have to run the main.py file and (......); once you did it you can start playing with the Seasonal Woodland.
 
