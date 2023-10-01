@@ -66,13 +66,13 @@ SynthDef(\flute, { arg scl = 0.2, freq = 440, ipress = 0.9, ibreath = 0.09, ifee
 // Synth for notes
 (
 SynthDef(\string_like_ring, {
-	arg out=0, freq=440, pan=0, dur=0.5, amp=0.3;
+	arg out=0, midinote=62, pan=0, dur=0.5, amp=0.3;
 	var env, snd, pluck;
 	env = EnvGen.kr(Env.new([0, 1, 0], [0.01, dur, 0.01]), doneAction: 2);
-	snd = SinOsc.ar(freq, 0, 0.2) * env;
-	snd = Resonz.ar(snd, freq, 0.1);
+	snd = SinOsc.ar(midinote, 0, 0.2) * env;
+	snd = Resonz.ar(snd, midinote, 0.1);
 	pluck = PinkNoise.ar(Decay.kr(Impulse.kr(0.005), 0.05));
-	env = freq.reciprocal;
+	env = midinote.reciprocal;
 	snd = CombL.ar(pluck, env, env, dur*6);
 	snd = snd * amp;
 	snd = LeakDC.ar(LPF.ar(Pan2.ar(snd, pan), 12000));
