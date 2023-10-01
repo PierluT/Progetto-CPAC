@@ -35,8 +35,8 @@ There are three components: the child, a wooden board and two sticks. The sticks
 ### Visualization
 
 <div style="display: flex; justify-content: space-between; margin: 20px;">
-    <img src="images/screenAutunno.png" alt="Immagine 1" width="640" height="480">
-    <img src="images/screenPrimavera.png" alt="Immagine 2" width="640" height="480">
+    <img src="images/screenAutunno.png" alt="Immagine 1" width="640" height="360">
+    <img src="images/screenPrimavera.png" alt="Immagine 2" width="640" height="360">
 </div>
 
 ### Music
