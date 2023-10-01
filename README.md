@@ -28,14 +28,23 @@ Our goals are:
 ## How it works
 There are 3 components: the children, the wood board and 2 sticks, that' re different for their top : in a stick we have an heart and in the second one we have a sphere. The batons are the objects wich the children will compose his/her music and changes the visualization,in fact the batons hit have 2 consequences, in particular:
 
-* **heart stick** : hitting the wood board with this baton directs the music composition in a prodcution of squeaky audio; in particular they will be produced diminuished chords in backgrounds and a melody taken fro randomly long intervals from the scale of the chord. In the visualization part the children will see the autumn season with the leaves movement; their trajectories are like disturbed and almost uncorrelated. They have primary color to simulate autumn behaviours.
+* **heart stick** : hitting the wood board with this baton directs the music composition in a prodcution of squeaky audio. In the visualization part the children will see the autumn season with the leaves movement; their trajectories are like disturbed and almost uncorrelated. They have primary color to simulate autumn behaviours.
 
-* **sphere stick** : hitting the wood board with this baton directs the music composition in a prodcution of a major background chords with a melody composed by unitary intervals starting from the tonal or the third. In the visualization part the autumn season becomes spring, and the previous leaves are transformed into butterflies. These animals has an harmonious movement, coordinated between them; furthermore if they meeet each other, they aggregate theirselves into groups.
+* **sphere stick** : hitting the wood board with this baton directs the music composition in a prodcution of a major background chords, to give a perception of straightforwardness. In the visualization part the autumn season becomes spring, and the previous leaves are transformed into butterflies. These animals has an harmonious movement, coordinated between them; furthermore if they meeet each other, they aggregate theirselves into groups.
 
 ### Visualization
 
-### Music
+<div style="display: flex; justify-content: space-between; margin: 20px;">
+    <img src="images/screenAutunno.png" alt="Immagine 1" width="200" height="150">
+    <img src="images/screenPrimavera.png" alt="Immagine 2" width="200" height="150">
+</div>
 
+### Music
+The music generation is composed by 2 factors: **harmony** and **melody**. 
+
+The harmony is made by the succession of the chords, if there isn't any kick the progression will be made by major chords; if the kid does some action, the progession will be influenced by the kid choice: in this case the next chord will be computed with the Markov chain model.
+
+The melody is strictly dependent from the chord: if this one is major or minor the composition is made of narrow intervals starting form first or third grade; if the chord is diminuished the melody will be made of large intervals starting from randomly positions of the derived scale.
 
 ## Technology
 Python: audio classification and musical composition.
@@ -59,5 +68,3 @@ Before running the project you have to train your audio classification script; w
 ### Step 3
 You have to initialize the NetAddress ( and the relative port), the synthetizers,the OscReciever and the OscFunc in Supercollider to allow the comunication between Python and Supercollider. After that you have to run the main.py file and (......); once you did it you can start playing with the Seasonal Woodland.
 
-
-## License
