@@ -26,11 +26,11 @@ Our goals are:
 * To make them understand basic concepts of musical consonance and dissonance and relating those to the concept of the changing of seasons.
 
 ## How it works
-There are 3 components: the children, the wood board and 2 sticks, that' re different for their top : in a stick we have an heart and in the second one we have a sphere. The batons are the objects wich the children will compose his/her music and changes the visualization,in fact the batons hit have 2 consequences, in particular:
+There are three components: the child, a wooden board and two sticks. The sticks are different for their top: in a stick we have an heart and in the second one we have a sphere. By hitting the board. the child will compose his/her music and change the visualization,in fact each stick has its own feature, in particular:
 
-* **heart stick** : hitting the wood board with this baton directs the music composition in a prodcution of squeaky audio. In the visualization part the children will see the autumn season with the leaves movement; their trajectories are like disturbed and almost uncorrelated. They have primary color to simulate autumn behaviours.
+* **heart stick** : hitting the wood board with this stick directs the music composition in a prodcution of squeaky audio. In the visualization part, the child will see the autumn season with the leaves acting as boids, but with their trajectories disturbed and almost uncorrelated. They have primary color to recall Autumn season.
 
-* **sphere stick** : hitting the wood board with this baton directs the music composition in a prodcution of a major background chords, to give a perception of straightforwardness. In the visualization part the autumn season becomes spring, and the previous leaves are transformed into butterflies. These animals has an harmonious movement, coordinated between them; furthermore if they meeet each other, they aggregate theirselves into groups.
+* **sphere stick** : hitting the wood board with this stick directs the music composition in a prodcution of a major background chords, to give a perception of straightforwardness. In the visualization part the Autumn season becomes Spring, and the leaves are transformed into butterflies. These animals have an harmonious movement, coordinated between them; furthermore if they meeet each other, they aggregate theirselves into flocks.
 
 ### Visualization
 
