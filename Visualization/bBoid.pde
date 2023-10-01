@@ -5,9 +5,13 @@ class Boid {
   float shade;
   ArrayList<Boid> friends;
 
-  // timers
+  // timer
   int thinkTimer = 0;
+  
+  // color
   float seasonShade;
+  // array of gif frames
+  PImage[] gifFrames;
 
   Boid (float xx, float yy) {
     move = new PVector(0, 0);
@@ -18,24 +22,20 @@ class Boid {
     shade = random(255);
     friends = new ArrayList<Boid>();
   }
-  
-  /*
-  void applyWind(PVector wind){
-    move.add(wind);
-  }*/
 
   void go () {
     increment();
     wrap();
 
     if (thinkTimer ==0 ) {
-      // update our friend array (lots of square roots)
+      // update our friend array
       getFriends();
     }
     flock();
     pos.add(move);
   }
 
+  // when boids are in flocks
   void flock () {
     PVector allign = getAverageDir();
     PVector avoidDir = getAvoidDir(); 
@@ -58,15 +58,6 @@ class Boid {
     cohese.mult(1);
     if (!option_cohese) cohese.mult(0);
     
-    // bacchetta 3: changeColor=true -> continuously changing color; changeColor=false -> colors remain the same
-    if (option_changeColor){
-      shade += getAverageColor() * 0.1;
-      shade += (random(3) - 1) ;
-      shade = (shade + 255) % 255; //max(0, min(255, shade));*/
-      //seasonShade = map(shade, 0, 255, 150, 255);
-    }
-    
-    //fill(shade);
     stroke(0, 255, 160);
 
     move.add(allign);
@@ -79,7 +70,7 @@ class Boid {
     
     shade += getAverageColor() * 0.03;
     shade += (random(2) - 1) ;
-    shade = (shade + 255) % 255; //max(0, min(255, shade));
+    shade = (shade + 255) % 255;
   }
 
   void getFriends () {
@@ -127,7 +118,7 @@ class Boid {
         count++;
       }
       if (count > 0) {
-        //sum.div((float)count);
+        sum.div((float)count);
       }
     }
     return sum;
@@ -150,14 +141,13 @@ class Boid {
       }
     }
     if (count > 0) {
-      //steer.div((float) count);
+      steer.div((float) count);
     }
     return steer;
   }
 
   PVector getAvoidAvoids() {
     PVector steer = new PVector(0, 0);
-    int count = 0;
 
     for (Avoid other : avoids) {
       float d = PVector.dist(pos, other.pos);
@@ -168,14 +158,12 @@ class Boid {
         diff.normalize();
         diff.div(d);        // Weight by distance
         steer.add(diff);
-        count++;            // Keep track of how many
       }
     }
     return steer;
   }
   
   PVector getCohesion () {
-   float neighbordist = 50;
     PVector sum = new PVector(0, 0);   // Start with empty vector to accumulate all locations
     int count = 0;
     for (Boid other : friends) {
@@ -196,50 +184,19 @@ class Boid {
     }
   }
 
-  int currentFrame = 0;
-
   void draw () {
-    /*for ( int i = 0; i < friends.size(); i++) {
-      Boid f = friends.get(i);
-      stroke(90);
-      //line(this.pos.x, this.pos.y, f.pos.x, f.pos.y);
-    }
-    noStroke();
-    fill(shade, 90, 200);
-    pushMatrix();
-    translate(pos.x, pos.y);
-    rotate(move.heading());
-    beginShape();
-    vertex(15 * globalScale, 0);
-    vertex(-7* globalScale, 7* globalScale);
-    vertex(-7* globalScale, -7* globalScale);
-    endShape(CLOSE);
-    popMatrix();*/
-    
-    // draw png: 
-    /*pushMatrix();
-    translate(pos.x, pos.y);
-    rotate(move.heading());
-    imageMode(CENTER);
-    tint(shade, 90, 200);
-    image(img, 0, 0, 100, 100);
-    popMatrix();*/
-    
     // draw gif:
     pushMatrix();
     translate(pos.x, pos.y);
     rotate(move.heading());
     imageMode(CENTER);
   
-    // Disegna il frame corrente della GIF
-    //tint(0, 100, seasonShade);
     if(option_changeColor){
-      //tint(lerp(0,255,1), shade+50, lerp(0,255,1));
-      tint(shade+50, lerp(0,255,1), lerp(0,255,1));
-    } else {
       tint(lerp(0,255,1), shade+50, lerp(0,255,1));
-      //tint(shade+50, lerp(0,255,1), 0);
+    } else {
+      tint(lerp(0,shade,1), shade-50, lerp(0,255,1));
     }
+    
     image(currentGif, 0, 0, 200, 200);
     popMatrix();
   }

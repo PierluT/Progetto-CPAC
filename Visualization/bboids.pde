@@ -3,24 +3,29 @@ import processing.net.*;
 import oscP5.*;
 import netP5.*;
 
-//Client client;
-int signal=-1;
 OscP5 oscP5;
 NetAddress myRemoteLocation;
 
-
 ArrayList<Boid> boids;
 ArrayList<Avoid> avoids;
+
+// Fall = background1, Spring = background2
 PImage background1;
 PImage background2;
+// currently selected background
 PImage currentbackground;
+
+// Leaf = gif1, Butterfly = gif2
 Gif gif1;
 Gif gif2;
+// currently selected boid animation
 Gif currentGif;
-//PVector wind;
+
+// initialised signal at -1, this value will 
+// be changed depending on the incoming OSC signal
+int signal=-1;
 
 float globalScale = .91;
-float eraseRadius = 20;
 String tool = "boids";
 
 // boid control
@@ -30,46 +35,44 @@ float crowdRadius;
 float avoidRadius;
 float coheseRadius;
 
+// boids features switches
 boolean option_friend = true;
 boolean option_crowd = true;
 boolean option_avoid = true;
-boolean option_noise = true; // false = still brushes at the beginning
+boolean option_noise = true;
 boolean option_cohese = true;
-boolean option_changeColor = false;
+boolean option_changeColor = true;
 
-// gui crap
+// gui text messages
 int messageTimer = 0;
 String messageText = "";
 
 void setup () {
-  size(2560, 1664);
+  size(1024, 576);
   textSize(16);
+  // initialise both backgrounds and animations
   background1 = loadImage("fall1.png");
   background2 = loadImage("spring1.png");
   currentbackground = background1;
-  gif1 = new Gif(this, "foglia.gif");
-  gif2 = new Gif(this, "butterfly2.gif");
-  //gif1.loop();
-  //gif2.loop();
+  gif1 = new Gif(this, "leaf4.gif");
+  gif2 = new Gif(this, "bf5.gif");
+  //gif1.jump(int(random(50)));
+  gif1.loop();
+  gif2.loop();
   currentGif = gif1;
   currentGif.loop();
   recalculateConstants();
   boids = new ArrayList<Boid>();
   avoids = new ArrayList<Avoid>();
-  for (int x = 100; x < width - 100; x+= 100) {
-    for (int y = 100; y < height - 100; y+= 100) {
- //   boids.add(new Boid(x + random(3), y + random(3)));
-  //    boids.add(new Boid(x + random(3), y + random(3)));
-    }
-  }
+  
+  // setting up a frame that can be avoided or not, depending on the scenario
   setupWalls();
-  //wind = new PVector(random(2)-1,random(2)-1);
-  //client = new Client(this, "127.0.0.1", 12345);
+  // setting up the IP address and the port to receive the OSC signals
   oscP5 = new OscP5(this, 12345);
   myRemoteLocation = new NetAddress("127.0.0.1", 12345);
 }
 
-// haha
+// recalculate boids features
 void recalculateConstants () {
   maxSpeed = 1.5 * globalScale;
   friendRadius = 60 * globalScale;
@@ -78,7 +81,7 @@ void recalculateConstants () {
   coheseRadius = friendRadius;
 }
 
-
+// obstacles
 void setupWalls() {
   avoids = new ArrayList<Avoid>();
    for (int x = 0; x < width; x+= 20) {
@@ -87,15 +90,6 @@ void setupWalls() {
   } 
 }
 
-void setupCircle() {
-  avoids = new ArrayList<Avoid>();
-   for (int x = 0; x < 50; x+= 1) {
-     float dir = (x / 50.0) * TWO_PI;
-    avoids.add(new Avoid(width * 0.5 + cos(dir) * height*.4, height * 0.5 + sin(dir)*height*.4));
-  } 
-}
-
-
 void draw () {
   noStroke();
   colorMode(RGB);
@@ -103,58 +97,39 @@ void draw () {
   rect(0, 0, width, height);
   currentbackground.resize(width, height);
   background(currentbackground);
-  /*backgroundX -= 1; // Modifica questa velocità per regolare la velocità dello scorrimento
-
-  // Verifica se l'immagine ha superato l'intera finestra
-  if (backgroundX <= -width) {
-    backgroundX = 0; // Torna all'inizio per creare un loop
-  }
-
-  // Disegna l'immagine di sfondo
-  image(img, backgroundX, 0);*/
-  
-    if (signal == 0) { // tipo di bacchetta 1: evita altri boids -> dissonanza
-     // option_friend = option_friend ? false : true;
-     println("Ho ricevuto : " + signal);
-     boids.add(new Boid(random(width), random(height)));
-     message(boids.size() + " Total Boid" + s(boids.size()));
-     signal = -1;
-     currentbackground = background1;
-     currentGif = gif1;
-     currentGif.loop();
-     option_friend = false;
-     option_crowd = false;
-     option_cohese = false;
-     //option_avoid = false;
-     option_noise = true;
-     option_changeColor = false;
-     message("Turned friend allignment " + on(option_friend));
-  } else if (signal == 2) { // tipo di bacchetta 2: allinea boids -> consonanza
-     // option_crowd = option_crowd ? false : true;
-     println("Ho ricevuto : " + signal);
-     boids.add(new Boid(random(width), random(height)));
-     message(boids.size() + " Total Boid" + s(boids.size()));
-     signal = -1;
-     currentbackground = background2;
-     currentGif = gif2;
-     currentGif.loop();
-     option_friend = true;
-     option_crowd = true;
-     option_cohese = true;
-     //option_avoid = false;
-     option_noise = false;
-     option_changeColor = true;
-     message("Turned crowding avoidance " + on(option_crowd));
-  }
-  
-  if (tool == "erase") {
-    noFill();
-    stroke(0, 100, 260);
-    rect(mouseX - eraseRadius, mouseY - eraseRadius, eraseRadius * 2, eraseRadius *2);
-    if (mousePressed) {
-      erase();
-    }
-  } else if (tool == "avoids") {
+  if (signal == 1) { 
+   // heart-shaped stick: fall and dissonance
+   println("I received : " + signal); 
+   boids.add(new Boid(random(width), random(height)));
+   message(boids.size() + " Total Boid" + s(boids.size()));
+   signal = -1;
+   currentbackground = background1;
+   currentGif = gif1;
+   currentGif.loop();
+   // setting up fall features
+   option_friend = false;
+   option_crowd = false;
+   option_cohese = false;
+   option_avoid = true;
+   option_noise = true;
+   option_changeColor = true;
+} else if (signal == 0) {
+   // sphere-shaped stick : spring and consonance
+   println("I received : " + signal);
+   boids.add(new Boid(random(width), random(height)));
+   message(boids.size() + " Total Boid" + s(boids.size()));
+   signal = -1;
+   currentbackground = background2;
+   currentGif = gif2;
+   currentGif.loop();
+   option_friend = true;
+   option_crowd = true;
+   option_cohese = true;
+   option_avoid = false;
+   option_noise = false;
+   option_changeColor = false;
+}
+if (tool == "avoids") {
     noStroke();
     fill(0, 200, 200);
     ellipse(mouseX, mouseY, 15, 15);
@@ -162,7 +137,6 @@ void draw () {
   for (int i = 0; i <boids.size(); i++) {
     Boid current = boids.get(i);
     current.go();
-    //current.applyWind(wind);
     current.draw();
   }
 
@@ -183,20 +157,11 @@ void keyPressed () {
   if (key == 'q') {
     tool = "boids";
     message("Add boids");
-  } else if (key == 'w') {
+  } /*else if (key == 'w') {
     tool = "avoids";
     message("Place obstacles");
-  } else if (key == 'e') {
-    tool = "erase";
-    message("Eraser");
-  } else if (key == '-') {
-    message("Decreased scale");
-    globalScale *= 0.8;
-  } else if (key == '=') {
-      message("Increased Scale");
-    globalScale /= 0.8;
-  } else if (key == '1' || signal == 0) { // tipo di bacchetta 1: evita altri boids -> dissonanza
-     // option_friend = option_friend ? false : true;
+  } */ else if (key == '1' || signal == 1) {
+    // tested simulating the heart-shaped stick signal as key 1
      println("Ho ricevuto : " + signal);
      boids.add(new Boid(random(width), random(height)));
      message(boids.size() + " Total Boid" + s(boids.size()));
@@ -208,10 +173,9 @@ void keyPressed () {
      option_cohese = false;
      //option_avoid = false;
      option_noise = true;
-     option_changeColor = false;
-     message("Turned friend allignment " + on(option_friend));
-  } else if (key == '2' || signal == 1) { // tipo di bacchetta 2: allinea boids -> consonanza
-     // option_crowd = option_crowd ? false : true;
+     option_changeColor = true;
+  } else if (key == '2' || signal == 0) { 
+     // tested simulating the sphere-shaped stick signal as key 2
      println("Ho ricevuto : " + signal);
      boids.add(new Boid(random(width), random(height)));
      message(boids.size() + " Total Boid" + s(boids.size()));
@@ -223,35 +187,33 @@ void keyPressed () {
      option_cohese = true;
      //option_avoid = false;
      option_noise = false;
-     option_changeColor = true;
-     message("Turned crowding avoidance " + on(option_crowd));
-  } else if (key == '3') { // tipo di bacchetta 3: cambia colore ai boids on -> continuously changing colors; off -> colors remain the same
-     //option_changeColor = option_changeColor ? false : true;
-     message("Changed boids color " + on(option_changeColor));
-  }
-  else if (key == '4') {
-     //option_avoid = option_avoid ? false : true;
-     message("Turned obstacle avoidance " + on(option_avoid));
-  }else if (key == '5') {
-     //option_cohese = option_cohese ? false : true;
-     message("Turned cohesion " + on(option_cohese));
-  }else if (key == '6') {
-     //option_noise = option_noise ? false : true;
-     message("Turned noise " + on(option_noise));
-  } else if (key == ',') {
+     option_changeColor = false;
+  } else if (key == 'w') {
      setupWalls(); 
-  } else if (key == '.') {
-     setupCircle(); 
   }
   recalculateConstants();
 
 }
 
+int oscEvent(OscMessage theOscMessage){
+  // receive OSC data
+  if (theOscMessage.checkAddrPattern("/data")) {
+    int value_received = theOscMessage.get(0).intValue();
+    println("Value received: " + value_received);
+    if(value_received == 0){
+      signal = 0; // 0 = spring / consonance
+    }
+    else if (value_received == 1){
+      signal = 1; // 0 = fall / dissonance
+    }
+  }
+  return signal;
+}
+
 void drawGUI() {
    if(messageTimer > 0) {
      fill((min(30, messageTimer) / 30.0) * 255.0);
-
-    text(messageText, 10, height - 20); 
+     text(messageText, 10, height - 20); 
    }
 }
 
@@ -263,47 +225,13 @@ String on(boolean in) {
   return in ? "on" : "off"; 
 }
 
+// tested simulating the hit of the stick with the mouse click
 void mousePressed () {
   switch (tool) {
   case "boids":
     boids.add(new Boid(random(width), random(height)));
     message(boids.size() + " Total Boid" + s(boids.size()));
     break;
-  case "avoids":
-    avoids.add(new Avoid(mouseX, mouseY));
-    break;
-  }
-}
-
-int oscEvent(OscMessage theOscMessage){
-  // Ricevi i dati OSC
-  if (theOscMessage.checkAddrPattern("/data")) {
-    int value_received = theOscMessage.get(0).intValue();
-    
-    println("Value received: " + value_received);
-    if(value_received == 0){
-      signal = 0;
-    }
-    else if (value_received == 1){
-      signal = 2;
-    }
-  }
-  return signal;
-}
-
-void erase () {
-  for (int i = boids.size()-1; i > -1; i--) {
-    Boid b = boids.get(i);
-    if (abs(b.pos.x - mouseX) < eraseRadius && abs(b.pos.y - mouseY) < eraseRadius) {
-      boids.remove(i);
-    }
-  }
-
-  for (int i = avoids.size()-1; i > -1; i--) {
-    Avoid b = avoids.get(i);
-    if (abs(b.pos.x - mouseX) < eraseRadius && abs(b.pos.y - mouseY) < eraseRadius) {
-      avoids.remove(i);
-    }
   }
 }
 
