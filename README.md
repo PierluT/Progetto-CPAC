@@ -39,6 +39,13 @@ There are three components: the child, a wooden board and two sticks. The sticks
     <img src="images/screenPrimavera.png" alt="Immagine 2" width="640" height="360">
 </div>
 
+PROCESSING receives an OSC signal from Python:
+
+* if the message received is “1”, meaning “DISSONANCE”, the scenario changes into Fall season and a new leaf-shaped boid appears
+* if it receives “0”, meaning “CONSONANCE”,  the scenario will change into Spring season and a new butterfly-shaped boid appears
+
+If PROCESSING keeps receiving the same message, more boids will appear in the same scenario, having the same shape and behaviour.
+
 ### Music
 The music generation is composed by 2 factors: **harmony** and **melody**. 
 
