@@ -125,6 +125,16 @@ class Grammar_Sequence:
         
         sequenza_ritmica_finale_accordi = ["m" if elemento == "M" else elemento for elemento in START_SEQUENCE ]
         return sequenza_ritmica_finale_accordi
+    
+    def numero_figurazioni(self,sequenza_ritmica_melodia_divisa):
+            numero_figurazioni = []
+            for element in sequenza_ritmica_melodia_divisa: 
+                #numero note per battuta
+                contatore_note = 0
+                contatore_note += len(element)
+                numero_figurazioni.append(contatore_note)
+            
+            return numero_figurazioni
 
     
 

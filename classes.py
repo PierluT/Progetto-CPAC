@@ -107,8 +107,8 @@ class Composizione(Nota, Accordo):
             # regole per successione dissonanza
             scala_corrente = scale_midi_per_accordo[Accordo.sigla]
             
-            #per la dissonanza si può partire dalla seconda,dalla sesta o dalla settima nota
-            posizione_iniziale = random.choice([0,3,4])
+            #per la dissonanza si può partire dalla seconda o dalla quarta
+            posizione_iniziale = random.choice([1,3])
             nota_iniziale = scala_corrente[posizione_iniziale]
 
             if(numeroNote == 2):

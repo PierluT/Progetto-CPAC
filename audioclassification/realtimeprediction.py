@@ -12,6 +12,7 @@ import sounddevice as sd
 import time
 from pythonosc import osc_message_builder
 from pythonosc import udp_client
+#import stick
 
 '''
 def make_prediction(args):
@@ -70,9 +71,8 @@ def callback(indata, frames, time, status):
         window=np.concatenate((window, indata), axis=0)
         x = np.expand_dims(window, axis=0)
         #each 5 updates make and print prediction
-        if (counter%8)==0:
-            if np.max(x)<300: print('silence')
-            else:
+        if (counter%10)==0:
+            if np.max(x)>300:            
                 #mask, env = envelope(x[0,:,0], args.sr, threshold=args.threshold)
                 #x = x[0,mask,0]
                 yhat = model.predict(x)
@@ -81,18 +81,18 @@ def callback(indata, frames, time, status):
                 #yhat = np.argmax(yhat)
                 print(classes[np.argmax(yhat)], yhat)
                 client.send_message('/stick', hittedby)
-                
+                #stick.stick = hittedby                
         counter=counter+1
 
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Audio Classification Training')
-    parser.add_argument('--model_fn', type=str, default='models/conv2d.h5',
+    parser.add_argument('--model_fn', type=str, default='audioclassification/models/conv2d.h5',
                         help='model file to make predictions')
     parser.add_argument('--pred_fn', type=str, default='y_pred',
                         help='fn to write predictions in logs dir')
-    parser.add_argument('--src_dir', type=str, default='wavfiles',
+    parser.add_argument('--src_dir', type=str, default='audioclassification/wavfiles',
                         help='directory containing wavfiles to predict')
     parser.add_argument('--dt', type=float, default=1.0,
                         help='time in seconds to sample audio')
@@ -105,7 +105,7 @@ if __name__ == '__main__':
     args, _ = parser.parse_known_args()
 
     #inizialize osc client
-    client = udp_client.SimpleUDPClient("10.175.22.196", 12345)
+    client = udp_client.SimpleUDPClient("192.168.178.106", 12345)
     
 
 
@@ -123,8 +123,23 @@ if __name__ == '__main__':
                            dtype= np.int16)
     
     stream.start()
+    #stick.initialize()
+    #currentstick=stick.stick
+    #with stream:
+    #    while True:
+    #        if currentstick!=stick.stick:
+    #            currentstick=stick.stick
+    #            print(currentstick)
 
-    time.sleep(20)    
+
+    #while True:
+    #    if currentstick!=stick.stick:
+    #        currentstick=stick.stick
+    #        print(currentstick)
+
+
+    
+    time.sleep(90)
     stream.stop()
 
     
