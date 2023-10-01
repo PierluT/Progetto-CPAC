@@ -30,7 +30,7 @@ There are three components: the child, a wooden board and two sticks. The sticks
 
 * **heart stick** : hitting the wood board with this stick directs the music composition in a prodcution of squeaky audio. In the visualization part, the child will see the autumn season with the leaves acting as boids, but with their trajectories disturbed and almost uncorrelated. They have primary color to recall Autumn season.
 
-* **sphere stick** : hitting the wood board with this stick directs the music composition in a prodcution of a major background chords, to give a perception of straightforwardness. In the visualization part the Autumn season becomes Spring, and the leaves are transformed into butterflies. These animals have an harmonious movement, coordinated between them; furthermore if they meeet each other, they aggregate theirselves into flocks.
+* **sphere stick** : hitting the wood board with this stick directs the music composition in a prodcution of a major background chords, to give a perception of straightforwardness. In the visualization part the Autumn season becomes Spring, and the leaves are transformed into butterflies. These animals have an harmonious movement, coordinated between them.
 
 ### Visualization
 
