@@ -1,4 +1,4 @@
-# Seasonal Woodland
+# Woodland Seasons
 
 <div style="display: flex; justify-content: space-between; margin: 20px;">
     <img src="images/screenAutunno.png" alt="Immagine 1" width="640" height="360">
@@ -18,12 +18,12 @@ Pierluigi Tartabini
 
 * Musical composition and sound design
 ## Abstract
-Seasonal Woodland is an artistic installation that enables children to play and discover music feelings and sensations through interaction and visualization. The main aspect of the project is the music knowledge model that the kid builds himself from the interaction with the installation.
+Woodland Seasons is an artistic installation that enables children to play and discover music feelings and sensations through interaction and visualization. The main aspect of the project is the music knowledge model that the kid builds himself from the interaction with the installation.
 
-The aim of the Seasonal Wood is that the children is, at the same time, an artist and a music composer with only one simple motion,that is hit the board with a stick. Based on wich stick the kid chooses to strike the board, he/she will listen and see different effects, that will learn him/her something about music basic concepts.
+The aim of the Woodland Seasons is that the children is, at the same time, an artist and a music composer with only one simple motion,that is hit the board with a stick. Based on wich stick the kid chooses to strike the board, he/she will listen and see different effects, that will learn him/her something about music basic concepts.
 
 ## Description
-Seasonal Woodland is thought to be an artistic installation following a full-fledged conversational model, involving sound and visual interaction. The target audience are children (of at least 4 years old) and the learning curve is zero, as the only requested action is that of hitting a wooden board with two different sticks, which will change the entire auditive and visive scenario.
+Woodland Seasons is thought to be an artistic installation following a full-fledged conversational model, involving sound and visual interaction. The target audience are children (of at least 4 years old) and the learning curve is zero, as the only requested action is that of hitting a wooden board with two different sticks, which will change the entire auditive and visive scenario.
 
 Our goals are:
 
@@ -61,7 +61,7 @@ Processing: graphical interface.
 ## How to run locally
 
 ### Step 1
-To try the Seasonal Woodland in your pc you have, first of all, to have installed Pyton, Processing and Supercollider.
+To try the Woodland Seasons in your pc you have, first of all, to have installed Pyton, Processing and Supercollider.
 For the hardware part you will get:
 * a wooden board that will be hitten.
 * two types of sticks to strike the table.
@@ -72,5 +72,5 @@ For the hardware part you will get:
 Before running the project you have to train your audio classification script; we recommend you to strike the table sequentially with a metronome beat, store the audio with a digital audio workstation (like Reaper) and train your script with the extracted data.
 
 ### Step 3
-You have to initialize the NetAddress (and the relative port), the synthetizers, the OscReciever and the OscFunc in Supercollider to allow the comunication between Python and Supercollider. You will have to start Processing and after that you have to run the main.py file and (......); once you did it you can start playing with the Seasonal Woodland.
+You have to initialize the NetAddress (and the relative port), the synthetizers, the OscReciever and the OscFunc in Supercollider to allow the comunication between Python and Supercollider. You will have to start Processing and after that you have to run the main.py file and (......); once you did it you can start playing with the Woodland Seasons.
 
