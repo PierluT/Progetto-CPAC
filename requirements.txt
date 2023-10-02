@@ -7,6 +7,7 @@ cachetools==4.0.0
 certifi==2019.11.28
 cffi==1.14.0
 chardet==3.0.4
+colorama==0.4.6
 cycler==0.10.0
 decorator==4.4.2
 gast==0.3.3
@@ -49,6 +50,7 @@ pycparser==2.19
 Pygments==2.6.1
 pyparsing==2.4.6
 python-dateutil==2.8.1
+python-osc==1.8.3
 python-speech-features==0.6
 pytz==2019.3
 PyYAML==5.3.1
@@ -61,6 +63,7 @@ scikit-learn==0.22.2
 scipy==1.4.1
 seaborn==0.10.1
 six==1.14.0
+sounddevice==0.4.6
 SoundFile==0.10.3.post1
 tensorboard==2.3.0
 tensorboard-plugin-wit==1.7.0

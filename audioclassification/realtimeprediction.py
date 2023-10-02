@@ -14,47 +14,7 @@ from pythonosc import osc_message_builder
 from pythonosc import udp_client
 #import stick
 
-'''
-def make_prediction(args):
-
-    model = load_model(args.model_fn,
-        custom_objects={'STFT':STFT,
-                        'Magnitude':Magnitude,
-                        'ApplyFilterbank':ApplyFilterbank,
-                        'MagnitudeToDecibel':MagnitudeToDecibel})
-    wav_paths = glob('{}/**'.format(args.src_dir), recursive=True)
-    wav_paths = sorted([x.replace(os.sep, '/') for x in wav_paths if '.wav' in x])
-    classes = sorted(os.listdir(args.src_dir))
-    labels = [os.path.split(x)[0].split('/')[-1] for x in wav_paths]
-    le = LabelEncoder()
-    y_true = le.fit_transform(labels)
-    results = []
-
-    for z, wav_fn in tqdm(enumerate(wav_paths), total=len(wav_paths)):
-        rate, wav = downsample_mono(wav_fn, args.sr)
-        mask, env = envelope(wav, rate, threshold=args.threshold)
-        clean_wav = wav[mask]
-        step = int(args.sr*args.dt)
-        batch = []
-
-        for i in range(0, clean_wav.shape[0], step):
-            sample = clean_wav[i:i+step]
-            sample = sample.reshape(-1, 1)
-            if sample.shape[0] < step:
-                tmp = np.zeros(shape=(step, 1), dtype=np.float32)
-                tmp[:sample.shape[0],:] = sample.flatten().reshape(-1, 1)
-                sample = tmp
-            batch.append(sample)
-        X_batch = np.array(batch, dtype=np.float32)
-        y_pred = model.predict(X_batch)
-        y_mean = np.mean(y_pred, axis=0)
-        y_pred = np.argmax(y_mean)
-        real_class = os.path.dirname(wav_fn).split('/')[-1]
-        print('Actual class: {}, Predicted class: {}'.format(real_class, classes[y_pred]))
-        results.append(y_mean)
-
-    np.save(os.path.join('logs', args.pred_fn), np.array(results))
-'''
+'''this file is used only to test audioclassification if main doesn't work properly'''
 
 def int_or_str(text):
     """Helper function for argument parsing."""

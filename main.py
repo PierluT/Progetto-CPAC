@@ -58,21 +58,22 @@ def int_or_str(text):
     
 def callback(indata, frames, time, status):
     global window, model, classes, counter
-    screening_window = np.array((2,2))
+    #screening_window = np.array((2,2))
     if any(indata):
         window=window[indata.shape[0]:window.shape[0],:]   
         window=np.concatenate((window, indata), axis=0)
         x = np.expand_dims(window, axis=0)
-        #each 5 updates make and print prediction
+        '''each 10 updates make and print prediction'''
         if (counter%10)==0:
             if np.max(x)>300:            
                 #mask, env = envelope(x[0,:,0], args.sr, threshold=args.threshold)
                 #x = x[0,mask,0]
                 yhat = model.predict(x)
-                hittedby = np.argmax(yhat)  # 0 = heart , 1 = irregular, 2 = sphere
+                hittedby = np.argmax(yhat)  # 0 = heart , 1 = sphere
                 hittedby = int(hittedby)
-                #yhat = np.argmax(yhat)
-                print(classes[np.argmax(yhat)], yhat)
+                if hittedby==0: print('\n' + 'SPHERE' + '\n')
+                else: print('\n' + 'HEART' + '\n')
+                #print(classes[np.argmax(yhat)])
                 client.send_message('/stick', hittedby)
                 stick.stick = hittedby                
         counter=counter+1
@@ -93,7 +94,7 @@ if __name__=="__main__":
     args, _ = parser.parse_known_args()
 
     #inizialize osc client
-    client = udp_client.SimpleUDPClient("192.168.178.106", 12345)
+    client = udp_client.SimpleUDPClient("10.168.68.169", 12345)
     
 
 
@@ -106,17 +107,19 @@ if __name__=="__main__":
                         'MagnitudeToDecibel':MagnitudeToDecibel})
     classes = sorted(os.listdir(args.src_dir))
     counter=0
+    #model.summary()
 
     stream = sd.InputStream(device=args.device, channels=1, callback=callback, blocksize=480,
                            samplerate=args.sr,
                            dtype= np.int16)
     
-    #print(stick.stick)
+    
     stick.initialize()
     currentstick=stick.stick
 
     # GENERAZIONE TRAMITE BACCHETTA
     with stream:
+        print("\n"+"\n"+ "WELOCME TO WOODLAND SEASON" + "\n"+"\n")
         while True:
 
             sigla_accordo = ""
@@ -134,15 +137,15 @@ if __name__=="__main__":
             totale_battute = []
             if currentstick!=stick.stick:
                 currentstick=stick.stick
-                print(currentstick)
+                if currentstick==0: print('CONSONANT' + '\n')
+                else: print('DISSONANT' + '\n')
 
             #lunghezza_composizione +=1
             valore_provvisorio_scelta_accordo = currentstick
             if valore_provvisorio_scelta_accordo == 0 :
-                choosen_chord_sequence = birgrammi_consonanti
-                print("consonanza")   
+                choosen_chord_sequence = birgrammi_consonanti   
                 sigla_accordo = markov.predict_next_state(accordo_iniziale,choosen_chord_sequence)
-                print("questo è l'accordo predetto: "+ sigla_accordo)
+                print("next predicted chord: "+ sigla_accordo)
                 accordo = Accordo()
                 accordo.set_tipologia("consonanza")
                 accordo.set_sigla(sigla_accordo)
@@ -151,9 +154,8 @@ if __name__=="__main__":
                 accordo_iniziale = sigla_accordo
             elif valore_provvisorio_scelta_accordo == 1: 
                 choosen_chord_sequence = bigrammi_dissonanti
-                print("dissonanza")
                 sigla_accordo = markov.predict_next_state(accordo_iniziale,choosen_chord_sequence)
-                print("questo è l'accordo predetto: "+ sigla_accordo)
+                print("next predicted chord: "+ sigla_accordo)
                 accordo = Accordo()
                 accordo.set_tipologia("dissonanza")
                 accordo.set_sigla(sigla_accordo)
@@ -168,7 +170,6 @@ if __name__=="__main__":
             numero_figure_metriche = grammar.numero_figurazioni(sequenza_ritmica_melodia_divisa)
             for element in sequenza_accordi_per_scale:
                 note_battuta = compositore.genera_melodia_per_battuta(element, numero_figure_metriche[pos])
-                #print(note_battuta)
                 melodia_totale.append(note_battuta)
                 pos += 1
             # in questo punto conosco melodia totale e sequenza ritmica divisa
@@ -177,15 +178,11 @@ if __name__=="__main__":
             composizione_totale = BattuteProcessor()
             totale_battute = composizione_totale.elabora_melodia(sequenza_accordi_per_scale,melodia_definitiva_con_ritmo)
             
-            #print(totale_battute.battuta.accordo)
             
             # MESSAGGI OSC MELDIA ED ARMONIA
             for battuta in totale_battute:
-                print(battuta.accordo.nota1)
-                #mando_composizione.send_message("/synth_control_accordi",['stop'])
                 mando_composizione.send_message("/synth_control_accordi",['chord3',battuta.accordo.nota1,battuta.accordo.nota2,battuta.accordo.nota3])
                 for nota in battuta.note:
-                    print(nota.dur)
                     mando_composizione.send_message("/synth_control_melodia",['nota',nota.midinote,nota.dur])
                     time.sleep(0.5)
 
