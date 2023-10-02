@@ -75,7 +75,7 @@ conda create -n audio python=3.7
 activate audio
 pip install -r requirements.txt
 ```
-Before running the project you have to train your audio classification script; we recommend you to strike the table sequentially with a metronome beat, store the audio with a digital audio workstation (like Reaper) and train your script with the extracted data.
+Before running the project you have to train your audio classification script; we recommend you to strike the table sequentially with a metronome beat, store the audio with a digital audio workstation (like Reaper) and train your data with the model that you prefere. For more details about the audioclassification follow the github repository of Seth Adams at the following link: https://github.com/seth814/Audio-Classification  
 
 ### Step 3
 You have to initialize the NetAddress (and the relative port), the synthetizers, the OscReciever and the OscFunc in Supercollider to allow the comunication between Python and Supercollider. You will have to start Processing and after that you have to run the main.py file and (......); once you did it you can start playing with the Woodland Seasons.
